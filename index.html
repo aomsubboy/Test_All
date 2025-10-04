@@ -1,456 +1,138 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Silver Skill – แพลตฟอร์มงานสำหรับผู้สูงอายุ (Demo)</title>
-  <!-- Tailwind Play CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink: {
-              50: '#f8f9fb', 100: '#f1f3f7', 200: '#e7eaf1', 300: '#d9dde6', 400: '#c2c9d4',
-              500: '#9aa3b2', 600: '#5b6472', 700: '#3a404a', 800: '#24272f', 900: '#181a1f'
-            },
-            brand: { 50:'#fff7ed', 100:'#ffedd5', 200:'#fed7aa', 300:'#fdba74', 400:'#fb923c', 500:'#f97316', 600:'#ea580c', 700:'#c2410c'}
-          },
-          boxShadow: {
-            soft: '0 10px 30px rgba(0,0,0,.06)'
-          },
-          borderRadius: {
-            xl2: '1.25rem'
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Band - Reminder Alzheimer Edition - LINE OA Interface</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind to use a bold, Canva-like rose color -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-red': '#E91E63', // Deep, vibrant pink/red for the theme
+                        'line-green': '#06C755', // Standard LINE chat color for bubbles
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
         }
-      }
-    }
-  </script>
-  <style>
-    .glass{backdrop-filter:saturate(180%) blur(14px); background:rgba(255,255,255,.65)}
-    .hc *{outline: none !important}
-  </style>
+    </script>
+    <style>
+        /* Ensuring Inter font is used and simulating a chat background */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+        }
+        /* Mobile container simulating the device screen */
+        .line-screen {
+            background-color: #f0f0f0; /* Light grey chat background */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
 </head>
-<body class="min-h-screen bg-ink-50 text-ink-800 antialiased selection:bg-brand-100 selection:text-ink-900" id="appRoot">
-  <!-- Top Bar -->
-  <header class="sticky top-0 z-40">
-    <div class="glass shadow-soft border-b border-white/40">
-      <div class="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between">
-        <a href="#" class="flex items-center gap-2">
-          <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-500 text-white font-bold">SS</span>
-          <div class="leading-tight">
-            <p class="font-semibold">Silver Skill</p>
-            <p class="text-xs text-ink-600">แพลตฟอร์มงานสำหรับผู้สูงอายุ</p>
-          </div>
-        </a>
-        <nav class="hidden md:flex items-center gap-6 text-sm text-ink-700">
-          <a href="#features" class="hover:text-ink-900">ทำอะไรได้บ้าง</a>
-          <a href="#demo" class="hover:text-ink-900">ลองใช้งาน</a>
-          <a href="#about" class="hover:text-ink-900">เป้าหมาย</a>
-        </nav>
-        <div class="flex items-center gap-2">
-          <button id="fontPlus" class="px-3 py-2 text-xs rounded-xl bg-white border border-ink-200 hover:bg-ink-100">A+</button>
-          <button id="toggleHC" class="px-3 py-2 text-xs rounded-xl bg-white border border-ink-200 hover:bg-ink-100">โหมดคอนทราสต์สูง</button>
-          <a href="#demo" class="hidden sm:inline-flex px-3 py-2 rounded-xl bg-ink-900 text-white hover:bg-ink-800">เริ่มต้น</a>
-        </div>
-      </div>
+<body class="min-h-screen antialiased flex justify-center">
+
+    <!-- Mobile Screen Container simulating LINE OA Interface -->
+    <div class="w-full max-w-md line-screen shadow-2xl">
+
+        <!-- Simulated LINE OA Header -->
+        <header class="bg-primary-red text-white p-4 shadow-lg flex items-center justify-between sticky top-0 z-10">
+            <div class="flex items-center">
+                <!-- Icon to simulate back/menu -->
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                <div class="font-bold text-lg">Band Reminder Official</div>
+            </div>
+            <!-- Settings Icon -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        </header>
+
+        <!-- Simulated Chat Content Area -->
+        <main class="flex-grow p-4 overflow-y-auto space-y-4 pt-6">
+
+            <!-- MESSAGE 1: Caregiver Welcome/Settings Card (LINE Rich Message Simulation) -->
+            <div class="flex justify-start">
+                <div class="w-full bg-white p-4 rounded-xl shadow-md border-t-4 border-primary-red">
+                    <h3 class="font-bold text-lg text-primary-red mb-2">🧑‍⚕️ Control System (For Caregivers)</h3>
+                    <p class="text-sm text-gray-600 mb-3">You can set up and control the Band Reminder watch for <span class="font-bold">Grandma Somsri</span> here.</p>
+                    
+                    <div class="grid grid-cols-2 gap-2 text-center text-white text-xs font-semibold">
+                        <button class="p-3 rounded-lg bg-line-green hover:bg-green-600 transition">
+                            Set Medication Reminders
+                        </button>
+                        <button class="p-3 rounded-lg bg-line-green hover:bg-green-600 transition">
+                            Set Geo-fencing
+                        </button>
+                        <button class="p-3 rounded-lg bg-primary-red hover:bg-pink-700 transition">
+                            Record Family Voice
+                        </button>
+                        <button class="p-3 rounded-lg bg-primary-red hover:bg-pink-700 transition">
+                            View Daily Health Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MESSAGE 2: Critical Emergency Alert (Watch -> LINE OA) -->
+            <div class="flex justify-start">
+                <div class="w-full">
+                    <div class="p-4 rounded-xl bg-red-100 border-2 border-primary-red shadow-lg animate-pulse">
+                        <h3 class="font-bold text-xl text-primary-red mb-2 flex items-center">
+                            🚨 ALERT! Emergency 🚨
+                        </h3>
+                        <p class="font-semibold text-gray-800">Patient: Grandma Somsri</p>
+                        <p class="font-semibold text-gray-800 mb-2">Type: <span class="font-bold">Fall Detection</span></p>
+                        
+                        <div class="bg-primary-red text-white p-3 rounded-lg text-sm text-center font-bold">
+                            <p class="mb-1">Current Coordinates (Click for Map)</p>
+                            <a href="#" class="underline text-yellow-300">
+                                Google Maps Link (GPS Coordinates)
+                            </a>
+                        </div>
+
+                        <div class="mt-3 text-xs text-red-700 font-medium">
+                            *This alert has been sent to the <span class="font-bold">A.S.M. (Community Volunteer)</span> group and local health agencies.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MESSAGE 3: Routine Reminder Alert (Watch -> LINE OA) -->
+            <div class="flex justify-start">
+                <div class="bg-line-green text-white p-3 rounded-lg rounded-tl-none max-w-xs shadow-md">
+                    <span class="font-bold">⏰ Notification:</span> 
+                    <span class="font-bold">Grandma Somsri</span> has successfully received the <span class="font-bold">"Drink Water"</span> activity reminder via the watch.
+                    <div class="text-xs text-right opacity-80 mt-1">11:00 AM</div>
+                </div>
+            </div>
+
+            <!-- MESSAGE 4: GPS Tracking Update (Watch -> LINE OA) -->
+            <div class="flex justify-start">
+                <div class="bg-white p-3 rounded-xl rounded-tl-none max-w-sm shadow-md border border-gray-200">
+                    <span class="font-bold text-primary-red">📍 Geo-fencing Alert:</span> 
+                    <span class="font-bold">Grandma Somsri</span> has re-entered the <span class="font-bold">"Safe Zone (Home)"</span>.
+                    <div class="text-xs text-right opacity-80 mt-1 text-gray-500">11:45 AM</div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Simulated LINE OA Input Bar / Rich Menu -->
+        <footer class="bg-white border-t border-gray-300 p-2 flex items-center gap-2">
+            <!-- Camera Icon -->
+            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.865-1.297a2 2 0 011.664-.89h1.868a2 2 0 011.664.89l.865 1.297a2 2 0 001.664.89H21a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <!-- Input Field -->
+            <input type="text" placeholder="Type message..." class="flex-grow p-2 border border-gray-300 rounded-full focus:outline-none text-sm">
+            <!-- Send Icon -->
+            <svg class="w-6 h-6 text-line-green" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4.695 3.518a.75.75 0 00-.73 1.056l3.435 9.066a.75.75 0 001.373.132l4.894-6.843 3.336-3.335a.75.75 0 00-1.06-.94l-8.47 5.756-2.583-6.81a.75.75 0 00-1.285-.018z"></path></svg>
+        </footer>
     </div>
-  </header>
 
-  <!-- Hero -->
-  <section class="mx-auto max-w-6xl px-4 sm:px-6 pt-12 pb-8">
-    <div class="grid md:grid-cols-2 gap-8 items-center">
-      <div>
-        <div class="inline-flex items-center gap-2 rounded-full bg-white border border-ink-200 px-3 py-1 text-xs text-ink-700 shadow-soft">เวอร์ชันสาธิต • ไม่บันทึกข้อมูล</div>
-        <h1 class="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight">งานที่ใช่สำหรับผู้สูงอายุ — <span class="text-brand-600">ใช้งานง่าย</span> ไม่ต้องพิมพ์เยอะ</h1>
-        <p class="mt-3 text-ink-700">สำรวจทักษะด้วยเสียงสั้น ๆ จับคู่งานใกล้บ้าน ดูคลิปสอน 3 นาที และติดตามรายได้แบบเข้าใจง่าย ทั้งหมดในหน้าเดียว</p>
-        <div class="mt-6 flex flex-wrap gap-3">
-          <a href="#demo" class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-ink-900 text-white shadow-soft hover:bg-ink-800">
-            <span>ลองใช้งานทันที</span>
-          </a>
-          <a href="#features" class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-ink-200 hover:bg-ink-100">ดูฟีเจอร์</a>
-        </div>
-      </div>
-      <div class="relative">
-        <div class="glass shadow-soft rounded-3xl p-5 border border-white/40">
-          <div class="grid grid-cols-2 gap-4">
-            <div class="rounded-2xl bg-white p-4 border border-ink-100">
-              <p class="text-xs text-ink-600">AI Matching</p>
-              <p class="font-semibold mt-1">แพ็คสินค้า • เพื่อนคุย • สอนทำอาหาร</p>
-            </div>
-            <div class="rounded-2xl bg-white p-4 border border-ink-100">
-              <p class="text-xs text-ink-600">Voice Onboarding</p>
-              <p class="font-semibold mt-1">เริ่มต้นด้วยเสียง ไม่ต้องพิมพ์</p>
-            </div>
-            <div class="rounded-2xl bg-white p-4 border border-ink-100">
-              <p class="text-xs text-ink-600">Learning 3 นาที</p>
-              <p class="font-semibold mt-1">คลิปสั้น ภาษาไทยง่าย ๆ</p>
-            </div>
-            <div class="rounded-2xl bg-white p-4 border border-ink-100">
-              <p class="text-xs text-ink-600">Income Tracker</p>
-              <p class="font-semibold mt-1">เห็นเงินเข้าชัดเจน</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features -->
-  <section id="features" class="mx-auto max-w-6xl px-4 sm:px-6 py-8">
-    <h2 class="text-2xl font-semibold">ทำอะไรได้บ้าง</h2>
-    <p class="text-ink-700 mt-1">สรุปฟีเจอร์สำคัญที่คุณใช้งานได้ในเดโมนี้ (ข้อมูลจำลอง ไม่มีการบันทึกจริง)</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-      <div class="bg-white border border-ink-100 rounded-3xl p-5 shadow-soft">
-        <h3 class="font-semibold">จับคู่งานที่เหมาะ</h3>
-        <p class="text-sm text-ink-700 mt-1">เลือกทักษะ ความสะดวก และพื้นที่ → ดูงานที่เหมาะทันที</p>
-      </div>
-      <div class="bg-white border border-ink-100 rounded-3xl p-5 shadow-soft">
-        <h3 class="font-semibold">เริ่มด้วยเสียง</h3>
-        <p class="text-sm text-ink-700 mt-1">กดปุ่มพูด แนะนำตัวสั้น ๆ ระบบสกัดทักษะให้อัตโนมัติ (จำลอง)</p>
-      </div>
-      <div class="bg-white border border-ink-100 rounded-3xl p-5 shadow-soft">
-        <h3 class="font-semibold">คลิปสอน 3 นาที</h3>
-        <p class="text-sm text-ink-700 mt-1">เรียนรู้ก่อนเริ่มงานจริง เข้าใจง่าย ภาษาบ้าน ๆ</p>
-      </div>
-      <div class="bg-white border border-ink-100 rounded-3xl p-5 shadow-soft">
-        <h3 class="font-semibold">ติดตามรายได้</h3>
-        <p class="text-sm text-ink-700 mt-1">ดูเป้าหมายเล็ก ๆ รายวัน พร้อมเหรียญกำลังใจ</p>
-      </div>
-      <div class="bg-white border border-ink-100 rounded-3xl p-5 shadow-soft">
-        <h3 class="font-semibold">บัดดี้ช่วยเหลือ</h3>
-        <p class="text-sm text-ink-700 mt-1">จับคู่รุ่นพี่คอยช่วยตอบ แนะนำงาน (จำลอง)</p>
-      </div>
-      <div class="bg-white border border-ink-100 rounded-3xl p-5 shadow-soft">
-        <h3 class="font-semibold">ปลอดภัยไว้ก่อน</h3>
-        <p class="text-sm text-ink-700 mt-1">งานมี QR ยืนยัน ส่งงานพร้อมรูปก่อน–หลัง (เดโม)</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Demo Tabs -->
-  <section id="demo" class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
-    <div class="bg-white border border-ink-100 rounded-3xl shadow-soft p-4 sm:p-6">
-      <div class="flex flex-wrap gap-2">
-        <button data-tab="skills" class="tabBtn px-4 py-2 rounded-2xl bg-ink-900 text-white">สำรวจทักษะ</button>
-        <button data-tab="jobs" class="tabBtn px-4 py-2 rounded-2xl bg-ink-900/10 text-ink-900">หางานใกล้บ้าน</button>
-        <button data-tab="learn" class="tabBtn px-4 py-2 rounded-2xl bg-ink-900/10 text-ink-900">เรียนรู้ 3 นาที</button>
-        <button data-tab="income" class="tabBtn px-4 py-2 rounded-2xl bg-ink-900/10 text-ink-900">รายได้ & เหรียญ</button>
-      </div>
-
-      <!-- Skills Tab -->
-      <div id="tab-skills" class="mt-6">
-        <div class="grid md:grid-cols-3 gap-6">
-          <div class="md:col-span-2">
-            <div class="rounded-2xl border border-ink-100 p-4">
-              <h3 class="font-semibold">เริ่มต้นด้วยเสียง (จำลอง)</h3>
-              <p class="text-sm text-ink-700 mt-1">กดปุ่มแล้วพูด: “สวัสดีค่ะ ชอบทำอาหารได้ เดินทางได้ในระยะ 3 กม.”</p>
-              <div class="mt-3 flex gap-3">
-                <button id="voiceBtn" class="px-4 py-2 rounded-2xl bg-brand-600 text-white hover:bg-brand-700">กดเพื่อพูด</button>
-                <button id="clearVoice" class="px-4 py-2 rounded-2xl bg-ink-100 hover:bg-ink-200">ล้างข้อความ</button>
-              </div>
-              <textarea id="voiceText" class="mt-3 w-full rounded-xl border border-ink-200 p-3" rows="3" placeholder="ข้อความจากเสียงจะปรากฏที่นี่ (จำลอง)"></textarea>
-            </div>
-
-            <div class="rounded-2xl border border-ink-100 p-4 mt-4">
-              <h3 class="font-semibold">เลือกความถนัด</h3>
-              <div class="grid sm:grid-cols-2 gap-3 mt-2 text-sm">
-                <label class="flex items-center gap-2"><input type="checkbox" class="skill" value="ทำอาหาร"/> ทำอาหาร</label>
-                <label class="flex items-center gap-2"><input type="checkbox" class="skill" value="แพ็คสินค้า"/> แพ็คสินค้า</label>
-                <label class="flex items-center gap-2"><input type="checkbox" class="skill" value="หัตถกรรม"/> หัตถกรรม</label>
-                <label class="flex items-center gap-2"><input type="checkbox" class="skill" value="เพื่อนคุย"/> เพื่อนคุย</label>
-                <label class="flex items-center gap-2"><input type="checkbox" class="skill" value="พิมพ์เอกสาร"/> พิมพ์เอกสาร</label>
-                <label class="flex items-center gap-2"><input type="checkbox" class="skill" value="สอนออนไลน์"/> สอนออนไลน์</label>
-              </div>
-              <div class="grid sm:grid-cols-3 gap-3 mt-4 text-sm">
-                <label class="block">ระยะทาง (กม.)
-                  <input id="distance" type="range" min="1" max="10" value="3" class="w-full"/>
-                  <span class="text-ink-600" id="distanceVal">3 กม.</span>
-                </label>
-                <label class="block">ชั่วโมงต่อวัน
-                  <select id="hours" class="w-full mt-1 rounded-xl border border-ink-200 p-2">
-                    <option>2</option><option>3</option><option selected>4</option><option>6</option>
-                  </select>
-                </label>
-                <label class="block">ความถนัดดิจิทัล
-                  <select id="digital" class="w-full mt-1 rounded-xl border border-ink-200 p-2">
-                    <option>พื้นฐาน</option><option selected>ปานกลาง</option><option>คล่องแคล่ว</option>
-                  </select>
-                </label>
-              </div>
-              <button id="matchBtn" class="mt-4 px-4 py-2 rounded-2xl bg-ink-900 text-white hover:bg-ink-800">จับคู่งาน</button>
-            </div>
-          </div>
-
-          <aside class="md:col-span-1">
-            <div class="rounded-2xl border border-ink-100 p-4">
-              <h4 class="font-semibold">ผลสรุปทักษะ</h4>
-              <ul id="skillSummary" class="mt-2 text-sm text-ink-700 space-y-1"></ul>
-              <div class="mt-3 text-xs text-ink-600">* เดโมนี้ใช้ข้อมูลภายในหน้าเท่านั้น</div>
-            </div>
-          </aside>
-        </div>
-      </div>
-
-      <!-- Jobs Tab -->
-      <div id="tab-jobs" class="mt-6 hidden">
-        <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
-          <label class="flex-1">ค้นหางาน
-            <input id="jobSearch" class="w-full mt-1 rounded-xl border border-ink-200 p-2" placeholder="พิมพ์คำว่า ทำอาหาร, แพ็คสินค้า ฯลฯ"/>
-          </label>
-          <label>ประเภท
-            <select id="jobType" class="w-full mt-1 rounded-xl border border-ink-200 p-2">
-              <option value="ทั้งหมด">ทั้งหมด</option>
-              <option>ทำอาหาร</option>
-              <option>แพ็คสินค้า</option>
-              <option>หัตถกรรม</option>
-              <option>เพื่อนคุย</option>
-              <option>พิมพ์เอกสาร</option>
-              <option>สอนออนไลน์</option>
-            </select>
-          </label>
-          <label>ระยะทาง ≤
-            <select id="jobKm" class="w-full mt-1 rounded-xl border border-ink-200 p-2">
-              <option>3</option><option selected>5</option><option>10</option>
-            </select>
-          </label>
-        </div>
-        <div id="jobList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4"></div>
-      </div>
-
-      <!-- Learn Tab -->
-      <div id="tab-learn" class="mt-6 hidden">
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div class="rounded-2xl border border-ink-100 p-4">
-            <p class="text-xs text-ink-600">3 นาที</p>
-            <h4 class="font-semibold">พื้นฐานการถ่ายรูปส่งงาน</h4>
-            <p class="text-sm text-ink-700 mt-1">จัดแสง–โฟกัส–ก่อน–หลัง</p>
-            <button class="mt-3 px-3 py-2 rounded-xl bg-ink-900 text-white">ดูคลิป (เดโม)</button>
-          </div>
-          <div class="rounded-2xl border border-ink-100 p-4">
-            <p class="text-xs text-ink-600">2 นาที</p>
-            <h4 class="font-semibold">การแพ็คสินค้าไม่ให้เสียหาย</h4>
-            <p class="text-sm text-ink-700 mt-1">วัสดุ–เทป–ฉลาก</p>
-            <button class="mt-3 px-3 py-2 rounded-xl bg-ink-900 text-white">ดูคลิป (เดโม)</button>
-          </div>
-          <div class="rounded-2xl border border-ink-100 p-4">
-            <p class="text-xs text-ink-600">3 นาที</p>
-            <h4 class="font-semibold">เริ่มวิดีโอคอลอย่างง่าย</h4>
-            <p class="text-sm text-ink-700 mt-1">กดปุ่ม–เปิดกล้อง–ปิดไมค์</p>
-            <button class="mt-3 px-3 py-2 rounded-xl bg-ink-900 text-white">ดูคลิป (เดโม)</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Income Tab -->
-      <div id="tab-income" class="mt-6 hidden">
-        <div class="grid md:grid-cols-2 gap-6">
-          <div class="rounded-2xl border border-ink-100 p-4">
-            <h4 class="font-semibold">ภาพรวมรายได้ (จำลอง)</h4>
-            <div class="mt-2 h-36 w-full bg-ink-100 rounded-xl overflow-hidden">
-              <!-- Simple bars -->
-              <div id="bars" class="h-full w-full flex items-end gap-1 p-2"></div>
-            </div>
-            <p class="text-sm text-ink-700 mt-2">เป้าหมายรายวัน: 200 บาท • ทำได้วันนี้: <span id="todayAmt">0</span> บาท</p>
-            <div class="mt-2 flex gap-2">
-              <button id="add50" class="px-3 py-2 rounded-xl bg-white border border-ink-200">+50</button>
-              <button id="add100" class="px-3 py-2 rounded-xl bg-white border border-ink-200">+100</button>
-              <button id="resetIncome" class="px-3 py-2 rounded-xl bg-ink-100">รีเซ็ต</button>
-            </div>
-          </div>
-          <div class="rounded-2xl border border-ink-100 p-4">
-            <h4 class="font-semibold">เหรียญกำลังใจ</h4>
-            <div id="badges" class="mt-3 flex flex-wrap gap-2"></div>
-            <p class="text-sm text-ink-700 mt-3">สะสมจากการทำงานครบ 1, 3, 5 งาน … (เดโม)</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- About/Impact -->
-  <section id="about" class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
-    <div class="bg-white border border-ink-100 rounded-3xl shadow-soft p-6">
-      <h3 class="text-xl font-semibold">เป้าหมายของ Silver Skill</h3>
-      <ul class="mt-2 grid sm:grid-cols-2 gap-3 text-sm text-ink-700">
-        <li class="bg-ink-50 rounded-xl p-3">เพิ่มรายได้เสริมให้ผู้สูงอายุ 2,000–5,000 บาท/เดือน </li>
-        <li class="bg-ink-50 rounded-xl p-3">เริ่มใช้งานได้ด้วยเสียง ปุ่มใหญ่ ตัวหนังสืออ่านง่าย</li>
-        <li class="bg-ink-50 rounded-xl p-3">มีคลิปสอนสั้น ๆ ก่อนเริ่มงานจริง</li>
-        <li class="bg-ink-50 rounded-xl p-3">โปร่งใส ปลอดภัย ยืนยันงานด้วยรูป/QR </li>
-      </ul>
-    </div>
-  </section>
-
-  <footer class="py-10">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 text-sm text-ink-600">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <p>© Silver Skill </p>
-        <p> - <span class="font-semibold">นวัตกรรมเพื่อผู้สูงอายุ</span> - </p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Demo Script -->
-  <script>
-    // Accessibility controls
-    const root = document.getElementById('appRoot');
-    document.getElementById('fontPlus').onclick = () => {
-      const cs = getComputedStyle(root);
-      const current = parseFloat(cs.fontSize);
-      root.style.fontSize = Math.min(current + 1, 22) + 'px';
-    }
-    document.getElementById('toggleHC').onclick = () => {
-      document.documentElement.classList.toggle('hc');
-      document.body.classList.toggle('bg-white');
-      document.body.classList.toggle('bg-ink-50');
-    }
-
-    // Tabs
-    const tabs = ['skills','jobs','learn','income'];
-    document.querySelectorAll('.tabBtn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const t = btn.dataset.tab;
-        tabs.forEach(name => {
-          document.getElementById('tab-'+name).classList.toggle('hidden', name !== t);
-        })
-        document.querySelectorAll('.tabBtn').forEach(b=>{
-          const active = b.dataset.tab === t;
-          b.className = 'tabBtn px-4 py-2 rounded-2xl ' + (active ? 'bg-ink-900 text-white' : 'bg-ink-900/10 text-ink-900');
-        })
-      })
-    })
-
-    // Voice Onboarding (simulated)
-    const voiceSamples = [
-      'ชอบทำอาหาร เดินทางได้ 3 กม. ว่างช่วงเช้า',
-      'ถนัดแพ็คของ งานประณีต ทำจากที่บ้านได้',
-      'อยากเป็นเพื่อนคุยทางโทรศัพท์ วันละ 2 ชั่วโมง'
-    ];
-    const voiceBtn = document.getElementById('voiceBtn');
-    const voiceText = document.getElementById('voiceText');
-    voiceBtn.onclick = () => {
-      voiceText.value = voiceSamples[Math.floor(Math.random()*voiceSamples.length)];
-      updateSummary();
-    }
-    document.getElementById('clearVoice').onclick = () => { voiceText.value=''; updateSummary(); }
-
-    // Skill selection
-    const skillBoxes = Array.from(document.querySelectorAll('.skill'));
-    const distance = document.getElementById('distance');
-    const distanceVal = document.getElementById('distanceVal');
-    distance.oninput = () => { distanceVal.textContent = distance.value + ' กม.'; }
-
-    function getSelectedSkills(){
-      return skillBoxes.filter(s=>s.checked).map(s=>s.value);
-    }
-    function updateSummary(){
-      const list = document.getElementById('skillSummary');
-      list.innerHTML = '';
-      const items = [];
-      const voice = voiceText.value.trim(); if(voice) items.push('จากเสียง: '+voice);
-      const skills = getSelectedSkills(); if(skills.length) items.push('ทักษะ: '+skills.join(', '));
-      items.push('ระยะทาง: '+distance.value+' กม.');
-      items.push('ชั่วโมง/วัน: '+document.getElementById('hours').value);
-      items.push('ถนัดดิจิทัล: '+document.getElementById('digital').value);
-      items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; list.appendChild(li); })
-    }
-    skillBoxes.forEach(b=>b.onchange=updateSummary);
-    ['hours','digital'].forEach(id=>document.getElementById(id).onchange=updateSummary);
-    updateSummary();
-
-    // Dummy jobs
-    const jobs = [
-      { id:1, title:'ผู้ช่วยครัวชุมชน', type:'ทำอาหาร', km:2, pay:300, desc:'เตรียมวัตถุดิบ ทำอาหารง่าย ๆ 3 ชั่วโมง'},
-      { id:2, title:'แพ็คสินค้าแห้ง', type:'แพ็คสินค้า', km:4, pay:250, desc:'แพ็ค ถุง ฉลาก จัดกล่อง ส่งรูปก่อน–หลัง'},
-      { id:3, title:'เพื่อนคุยทางโทรศัพท์', type:'เพื่อนคุย', km:0, pay:150, desc:'โทรคุย 60 นาที มีสคริปต์คำถามอุ่นใจ'},
-      { id:4, title:'พิมพ์เอกสารตามแบบ', type:'พิมพ์เอกสาร', km:0, pay:200, desc:'พิมพ์/ตรวจคำผิด เอกสาร A4 3 หน้า'},
-      { id:5, title:'สอนทำแกงเขียวหวาน', type:'สอนออนไลน์', km:0, pay:400, desc:'คลาสออนไลน์ 1 ชั่วโมง สอนสด'},
-      { id:6, title:'ถักพวงกุญแจไหมพรม', type:'หัตถกรรม', km:3, pay:280, desc:'ทำงานที่บ้าน ส่งงานเป็นชุด'}
-    ];
-
-    function renderJobs(list){
-      const wrap = document.getElementById('jobList');
-      wrap.innerHTML = '';
-      list.forEach(j=>{
-        const card = document.createElement('div');
-        card.className = 'rounded-2xl border border-ink-100 p-4 hover:shadow-soft transition bg-white';
-        card.innerHTML = `
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <h4 class="font-semibold">${j.title}</h4>
-              <p class="text-xs text-ink-600 mt-0.5">ประเภท: ${j.type} • ระยะทาง ${j.km===0?'ออนไลน์':j.km+' กม.'}</p>
-            </div>
-            <span class="px-2 py-1 rounded-lg bg-ink-900 text-white text-xs">~ ${j.pay} บาท</span>
-          </div>
-          <p class="text-sm text-ink-700 mt-2">${j.desc}</p>
-          <div class="mt-3 flex gap-2">
-            <button class="px-3 py-2 rounded-xl bg-ink-900 text-white">ดูรายละเอียด</button>
-            <button class="px-3 py-2 rounded-xl bg-ink-100">รับงาน (เดโม)</button>
-          </div>
-        `;
-        wrap.appendChild(card);
-      })
-    }
-    function filterJobs(){
-      const q = document.getElementById('jobSearch').value.toLowerCase();
-      const type = document.getElementById('jobType').value;
-      const km = parseInt(document.getElementById('jobKm').value,10);
-      const filtered = jobs.filter(j=>{
-        const tmatch = (type==='ทั้งหมด' || j.type===type);
-        const kmok = (j.km===0 || j.km<=km);
-        const qmatch = (j.title+j.type+j.desc).toLowerCase().includes(q);
-        return tmatch && kmok && qmatch;
-      })
-      renderJobs(filtered);
-    }
-    ['jobSearch','jobType','jobKm'].forEach(id=>document.getElementById(id).addEventListener('input', filterJobs));
-    renderJobs(jobs);
-
-    // Match button maps skills to suggested jobs quickly
-    document.getElementById('matchBtn').onclick = () => {
-      const skills = getSelectedSkills();
-      const maxKm = parseInt(distance.value,10);
-      const sugg = jobs.filter(j => (skills.length===0 || skills.includes(j.type)) && (j.km===0 || j.km<=maxKm));
-      // Switch tab to jobs and render
-      document.querySelector('[data-tab="jobs"]').click();
-      renderJobs(sugg.length? sugg : jobs);
-    }
-
-    // Income demo
-    const barsEl = document.getElementById('bars');
-    const todayAmtEl = document.getElementById('todayAmt');
-    let todayAmt = 0;
-    function drawBars(){
-      barsEl.innerHTML='';
-      const vals = [120, 180, 90, 200, 80, 160, todayAmt];
-      const max = Math.max(...vals, 220);
-      vals.forEach(v=>{
-        const b = document.createElement('div');
-        b.style.height = (v/max*100)+'%';
-        b.className = 'flex-1 bg-ink-300 rounded-t-lg';
-        barsEl.appendChild(b);
-      })
-      todayAmtEl.textContent = todayAmt;
-      renderBadges();
-    }
-    function renderBadges(){
-      const wrap = document.getElementById('badges');
-      wrap.innerHTML = '';
-      const thresholds = [1,3,5,10];
-      const jobsDone = Math.floor(todayAmt/100); // demo rule
-      thresholds.forEach(t=>{
-        const got = jobsDone >= t;
-        const span = document.createElement('span');
-        span.className = 'px-3 py-1 rounded-full text-xs '+(got?'bg-brand-200 text-ink-900':'bg-ink-100 text-ink-600');
-        span.textContent = got? `เหรียญ ${t} งาน` : `ล็อกอยู่ • ${t} งาน`;
-        wrap.appendChild(span);
-      })
-    }
-    document.getElementById('add50').onclick = ()=>{ todayAmt+=50; drawBars(); }
-    document.getElementById('add100').onclick = ()=>{ todayAmt+=100; drawBars(); }
-    document.getElementById('resetIncome').onclick = ()=>{ todayAmt=0; drawBars(); }
-    drawBars();
-  </script>
 </body>
 </html>
