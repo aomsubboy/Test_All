@@ -1,1297 +1,706 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <title>แบบทดสอบการตลาด บทที่ 8–14</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-    }
+import React, { useState, useEffect } from 'react';
+import { CheckCircle, XCircle, ChevronRight, ChevronLeft, RefreshCcw, BookOpen, Trophy, Award, List, ArrowLeft } from 'lucide-react';
 
-    body {
-      margin: 0;
-      padding: 0;
-      background: #f5f5f7;
-      color: #111827;
-      display: flex;
-      justify-content: center;
-    }
+const QuizApp = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  // เปลี่ยนการเก็บคะแนนและคำตอบ เป็น Array เพื่อให้ย้อนกลับไปมาได้
+  const [userAnswers, setUserAnswers] = useState([]); 
+  const [hasFinished, setHasFinished] = useState(false); // เช็คว่าเคยทำจบหรือยัง
 
-    .container {
-      max-width: 960px;
-      width: 100%;
-      padding: 24px 16px 40px;
+  // ข้อมูลข้อสอบ 40 ข้อ
+  const questions = [
+    // --- บทที่ 8 ---
+    {
+      question: "ข้อใดอธิบายความหมายของ 'การแบ่งส่วนตลาด' (Market Segmentation) ได้ถูกต้องและชัดเจนที่สุด?",
+      options: [
+        "ก. บริษัทน้ำดื่ม A ผลิตน้ำดื่มบรรจุขวดแบบมาตรฐานเพียงแบบเดียว",
+        "ข. แบรนด์เสื้อผ้า B จัดกลุ่มลูกค้าเป็น 'กลุ่มวัยรุ่นสตรีท' และ 'กลุ่มวัยทำงานเรียบหรู'",
+        "ค. ร้านกาแฟ C เลือกเปิดสาขาเฉพาะในย่านสีลมและสาทร",
+        "ง. บริษัทสมาร์ทโฟน D สร้างจุดขายว่ากล้องชัดที่สุดในโลก"
+      ],
+      correct: 1,
+      explanation: "ข. ถูกต้อง เพราะการแบ่งส่วนตลาดคือการจัดกลุ่มผู้บริโภคที่มีความต้องการคล้ายกันออกจากกัน (ก=Mass Market, ค=Targeting, ง=Positioning)"
+    },
+    {
+      question: "ข้อใด ไม่ใช่ เหตุผลหรือวัตถุประสงค์หลักของการทำ 'การแบ่งส่วนตลาด'?",
+      options: [
+        "ก. เพื่อให้ธุรกิจออกแบบผลิตภัณฑ์ตอบสนองลูกค้าได้แม่นยำขึ้น",
+        "ข. เพื่อลดต้นทุนการผลิตให้ต่ำที่สุดโดยเน้นผลิตสินค้าแบบเดียว",
+        "ค. เพื่อรักษาฐานลูกค้าเดิมโดยนำเสนอสิ่งที่ตรงใจ",
+        "ง. เพื่อโฟกัสการสื่อสารและเลือกสื่อโฆษณาได้ตรงกลุ่ม"
+      ],
+      correct: 1,
+      explanation: "ข. เป็นแนวคิดของ Mass Marketing (เน้นปริมาณมาก ต้นทุนต่ำ) ไม่ใช่ Segmentation"
+    },
+    {
+      question: "สถานการณ์ใดสะท้อนถึง 'ประโยชน์ของการแบ่งส่วนตลาด' ในเรื่องการมองเห็นโอกาสทางการตลาดได้ชัดเจนที่สุด?",
+      options: [
+        "ก. บริษัทน้ำอัดลมทุ่มงบโฆษณาทีวีปูพรมทั่วประเทศ",
+        "ข. แบรนด์เครื่องสำอางเห็นช่องว่าง 'ผู้ชายวัยทำงาน' ที่ต้องการครีมไม่เหนียว จึงออกสินค้าใหม่",
+        "ค. ร้านสะดวกซื้อวางสินค้าเหมือนกันทุกสาขา",
+        "ง. โรงงานผลิตเสื้อยืดสีขาว Free Size อย่างเดียว"
+      ],
+      correct: 1,
+      explanation: "ข. ถูกต้อง เพราะการแบ่งส่วนตลาดทำให้เห็น 'ช่องว่าง' หรือ Niche Market ที่คู่แข่งยังทำไม่ถึง"
+    },
+    {
+      question: "แบรนด์แชมพูแยกสูตร (ขจัดรังแค, ผมนุ่ม, ลดผมร่วง) เป็นการใช้เกณฑ์การแบ่งส่วนตลาดแบบใด?",
+      options: [
+        "ก. เกณฑ์ประชากรศาสตร์ (Demographic)",
+        "ข. เกณฑ์จิตวิทยา (Psychographic)",
+        "ค. เกณฑ์พฤติกรรม (Behavioristic)",
+        "ง. เกณฑ์ภูมิศาสตร์ (Geographic)"
+      ],
+      correct: 2,
+      explanation: "ค. ถูกต้อง (หัวข้อ Benefit Sought หรือผลประโยชน์ที่แสวงหา) ลูกค้าเลือกซื้อจากผลลัพธ์ที่ต้องการ"
+    },
+    {
+      question: "ในกระบวนการ STP เมื่อทำ Segmentation (ขั้น 1-2) เสร็จแล้ว ขั้นตอนถัดไป (ขั้นที่ 3) คืออะไร?",
+      options: [
+        "ก. ตัดสินใจเลือกกลุ่มลูกค้าที่ดีที่สุดมาเป็นตลาดเป้าหมาย",
+        "ข. ทำการประเมินความน่าสนใจและศักยภาพของแต่ละส่วนตลาด",
+        "ค. สร้างจุดยืนและกำหนดตำแหน่งผลิตภัณฑ์",
+        "ง. ออกแบบส่วนประสมทางการตลาด (4Ps)"
+      ],
+      correct: 1,
+      explanation: "ข. ต้อง 'ประเมินความน่าสนใจ' (Evaluate) ก่อน แล้วค่อย 'เลือก' (Select) ในขั้นที่ 4"
+    },
+    {
+      question: "โค้ก (Coke) ในอดีตผลิตรสชาติเดียว ขวดเดียว ขายทุกคนทั่วโลก จัดเป็นกลยุทธ์ใด?",
+      options: [
+        "ก. กลยุทธ์ตลาดหลายส่วน (Differentiated)",
+        "ข. กลยุทธ์เฉพาะส่วนตลาด (Concentrated)",
+        "ค. กลยุทธ์ตลาดรวม (Undifferentiated)",
+        "ง. กลยุทธ์การตลาดจุลภาค (Micromarketing)"
+      ],
+      correct: 2,
+      explanation: "ค. ตลาดรวม (Mass/Undifferentiated) มองลูกค้าทุกคนเหมือนกันหมด"
+    },
+    {
+      question: "Honda ผลิตรถหลายรุ่น (City, Civic, Accord) เพื่อตอบโจทย์ลูกค้าต่างกลุ่มกัน ใช้กลยุทธ์ใด?",
+      options: [
+        "ก. กลยุทธ์ตลาดรวม",
+        "ข. กลยุทธ์หลายส่วนตลาด ",
+        "ค. กลยุทธ์เฉพาะส่วนตลาด",
+        "ง. กลยุทธ์การตลาดส่วนบุคคล"
+      ],
+      correct: 1,
+      explanation: "ข. หลายส่วนตลาด คือเลือกเป้าหมายมากกว่า 1 กลุ่ม และทำสินค้าต่างกันให้แต่ละกลุ่ม"
+    },
+    {
+      question: "แชมพู Nizoral เน้นเจาะกลุ่มลูกค้าที่มีปัญหารังแค/เชื้อรา เพียงกลุ่มเดียว ใช้กลยุทธ์ใด?",
+      options: [
+        "ก. กลยุทธ์ตลาดรวม",
+        "ข. กลยุทธ์หลายส่วนตลาด",
+        "ค. กลยุทธ์เฉพาะส่วนตลาด ",
+        "ง. กลยุทธ์การสร้างความแตกต่าง"
+      ],
+      correct: 2,
+      explanation: "ค. เฉพาะส่วนตลาด (Niche/Concentrated) โฟกัสกลุ่มเล็กๆ กลุ่มเดียวที่ตนเชี่ยวชาญ"
+    },
+    {
+      question: "Volvo สร้างภาพลักษณ์ว่าเป็น 'รถยนต์ที่ปลอดภัยที่สุด' เทียบกับคู่แข่ง ตรงกับข้อใด?",
+      options: [
+        "ก. การแบ่งส่วนตลาด",
+        "ข. การเลือกตลาดเป้าหมาย",
+        "ค. การกำหนดตำแหน่งผลิตภัณฑ์ ",
+        "ง. การสร้างตราสินค้า"
+      ],
+      correct: 2,
+      explanation: "ค. Positioning คือการปักธงในใจลูกค้าว่าเราคือใคร เด่นเรื่องอะไรเมื่อเทียบกับคู่แข่ง"
+    },
+    {
+      question: "สิงคโปร์แอร์ไลน์ เด่นเรื่องความสุภาพและการบริการของพนักงานต้อนรับ เป็น Differentiation ด้านใด?",
+      options: [
+        "ก. ด้านผลิตภัณฑ์",
+        "ข. ด้านภาพลักษณ์",
+        "ค. ด้านช่องทางจัดจำหน่าย",
+        "ง. ด้านบุคลากร "
+      ],
+      correct: 3,
+      explanation: "ง. Personnel Differentiation คือความแตกต่างที่ตัวบุคคล/พนักงาน"
+    },
+    {
+      question: "สมาร์ทโฟนจอพับ ยอดขายพุ่งเร็ว ลูกค้ายอมรับมากขึ้น คู่แข่งเริ่มเข้ามา แอยู่ในช่วงใดของ PLC?",
+      options: [
+        "ก. ขั้นแนะนำ (Introduction)",
+        "ข. ขั้นเจริญเติบโต (Growth)",
+        "ค. ขั้นอิ่มตัว (Maturity)",
+        "ง. ขั้นถดถอย (Decline)"
+      ],
+      correct: 1,
+      explanation: "ข. Growth Stage: ยอดขายโตเร็ว คู่แข่งรายใหม่เริ่มเข้ามา"
+    },
+    {
+      question: "สินค้าเข้าสู่ 'ขั้นแนะนำ (Introduction)' ควรวางแผนโปรโมชั่นอย่างไร?",
+      options: [
+        "ก. ลดราคาทันทีเพื่อแย่งลูกค้า",
+        "ข. โฆษณาแบบตอกย้ำ ",
+        "ค. ทุ่มงบโฆษณาเพื่อสร้างการรับรู้ ",
+        "ง. ตัดงบโฆษณาออก"
+      ],
+      correct: 2,
+      explanation: "ค. ขั้นแนะนำต้องเน้นสร้าง Awareness ให้คนรู้จักและอยากลอง"
+    },
+    {
+      question: "กราฟแกนตั้ง-แกนนอน (เช่น ราคา vs คุณภาพ) ที่ใช้ดูตำแหน่งแบรนด์เทียบคู่แข่ง เรียกว่าอะไร?",
+      options: [
+        "ก. SWOT Analysis",
+        "ข. Positioning Map ",
+        "ค. Marketing Mix Model",
+        "ง. Product Life Cycle Graph"
+      ],
+      correct: 1,
+      explanation: "ข. Perceptual Map หรือ Positioning Map ใช้แสดงตำแหน่งสินค้าในสายตาผู้บริโภค"
+    },
+    {
+      question: "แบรนด์ Hermès เน้นขายความภาคภูมิใจและสถานะทางสังคม เป็นการวางตำแหน่งแบบใด?",
+      options: [
+        "ก. Functional Positioning",
+        "ข. Emotional Positioning",
+        "ค. Differentiation Positioning",
+        "ง. Price Positioning"
+      ],
+      correct: 1,
+      explanation: "ข. Emotional เน้นอารมณ์ความรู้สึก ภาพลักษณ์ มากกว่าฟังก์ชันการใช้งาน"
+    },
+    {
+      question: "ข้อใดคือสโลแกนที่ 'ไม่ดี' (ทื่อ จำยาก ไม่น่าสนใจ) มากที่สุด?",
+      options: [
+        "ก. เป้าหมายมีไว้พุ่งชน",
+        "ข. หอมกรุ่นจากเตาทุกวัน",
+        "ค. เราคือผู้นำด้านการผลิตสินค้าอุปโภคบริโภคที่มีมาตรฐานสากล...",
+        "ง. คิดจะดื่ม ดื่มคริสตัล"
+      ],
+      correct: 2,
+      explanation: "ค. ยาวเกินไป ใช้คำทางการ จำยาก ขาดอารมณ์ร่วม (ไม่เข้าเกณฑ์สั้น กระชับ โดนใจ)"
+    },
+    {
+      question: "ยาสีฟันสมุนไพร vs ยาสีฟันเจล ถือเป็นคู่แข่งกันเพราะเหตุผลใดสำคัญที่สุด?",
+      options: [
+        "ก. ราคาใกล้เคียงกัน",
+        "ข. สนองความต้องการของลูกค้ากลุ่มเดียวกัน",
+        "ค. ใช้พรีเซนเตอร์วัยรุ่นเหมือนกัน",
+        "ง. ขายใน 7-Eleven เหมือนกัน"
+      ],
+      correct: 1,
+      explanation: "ข. แนวคิดการแข่งขันมองที่ 'การตอบสนองความต้องการ' (Need) พื้นฐานเดียวกัน (ความสะอาดในช่องปาก)"
+    },
+    // --- หมวดที่ 1: บทที่ 11 ---
+    {
+      question: "ในมุมมอง 4Cs ส่วนผสม 'ราคา (Price)' ของธุรกิจ ตรงกับมุมมองลูกค้าในข้อใด?",
+      options: [
+        "ก. ความสะดวกสบาย (Convenience)",
+        "ข. การสื่อสาร (Communication)",
+        "ค. ต้นทุนของลูกค้า (Customer Cost)",
+        "ง. การแก้ปัญหาให้ลูกค้า (Customer Solution)"
+      ],
+      correct: 2,
+      explanation: "ค. Price = Cost to satisfy (ต้นทุนที่ลูกค้าต้องจ่าย ทั้งเงิน เวลา และความพยายาม)"
+    },
+    {
+      question: "โรงแรมแถมบริการสปาฟรี อาหารเช้า รถรับส่ง จัดอยู่ในระดับผลิตภัณฑ์ใด?",
+      options: [
+        "ก. ผลิตภัณฑ์หลัก",
+        "ข. ผลิตภัณฑ์ควบ ",
+        "ค. ผลิตภัณฑ์พื้นฐาน",
+        "ง. ผลิตภัณฑ์ที่คาดหวัง"
+      ],
+      correct: 1,
+      explanation: "ข. Augmented Product คือส่วนเสริม/บริการพิเศษที่เพิ่มเข้ามาให้เหนือคู่แข่ง"
+    },
+    {
+      question: "'โลงศพ' หรือ 'ประกันชีวิต' จัดเป็นสินค้าประเภทใด?",
+      options: [
+        "ก. สินค้าสะดวกซื้อ",
+        "ข. สินค้าเลือกซื้อ",
+        "ค. สินค้าเจาะจงซื้อ",
+        "ง. สินค้าไม่แสวงซื้อ "
+      ],
+      correct: 3,
+      explanation: "ง. Unsought Goods คือของที่คนไม่คิดจะซื้อ หรือไม่เห็นความจำเป็นจนกว่าจะถึงเวลา"
+    },
+    {
+      question: "Apple ตั้งราคา iPhone รุ่นใหม่ไว้สูงมากเพื่อเจาะกลุ่มคนยอมจ่าย แล้วค่อยลดราคาลง เรียกว่า?",
+      options: [
+        "ก. Market-Penetration Pricing",
+        "ข. Market-Skimming Pricing",
+        "ค. Psychological Pricing",
+        "ง. Going-rate Pricing"
+      ],
+      correct: 1,
+      explanation: "ข. Skimming (ตักไขมัน/หัวกะทิ) ตั้งราคาสูงช่วงแรกเพื่อกอบโกยกำไรสูงสุดจากกลุ่ม Early Adopter"
+    },
+    {
+      question: "โฆษณาหนักๆ ให้ลูกค้าอยากกินจนต้องเดินไปถามซื้อที่ร้านค้า เรียกว่ากลยุทธ์อะไร?",
+      options: [
+        "ก. กลยุทธ์ผลัก (Push Strategy)",
+        "ข. กลยุทธ์ดึง (Pull Strategy)",
+        "ค. การขายโดยพนักงาน",
+        "ง. Trade Promotion"
+      ],
+      correct: 1,
+      explanation: "ข. Pull Strategy คือดึงให้ลูกค้าวิ่งเข้าหาสินค้า (ผ่านการโฆษณาไปยังผู้บริโภคโดยตรง)"
+    },
+    // --- หมวดที่ 2: บทที่ 12 ---
+    {
+      question: "หัวใจสำคัญที่สุดของ 'การตลาดทางตรง (Direct Marketing)' คือสิ่งใด?",
+      options: [
+        "ก. พนักงานขายจำนวนมาก",
+        "ข. งบโฆษณาสูง",
+        "ค. ฐานข้อมูลลูกค้า ",
+        "ง. หน้าร้านสาขาเยอะๆ"
+      ],
+      correct: 2,
+      explanation: "ค. ต้องมี Database ที่แม่นยำเพื่อเจาะจงตัวบุคคลได้"
+    },
+    {
+      question: "การเชื่อมโยงข้อมูลหน้าร้าน เว็บ แอป เข้าด้วยกันอย่างไร้รอยต่อ เรียกว่า?",
+      options: [
+        "ก. Multi-Level Marketing",
+        "ข. Omni-Channel Marketing",
+        "ค. Telemarketing",
+        "ง. Mass Marketing"
+      ],
+      correct: 1,
+      explanation: "ข. Omni-Channel คือการผสานทุกช่องทางให้เป็นหนึ่งเดียว"
+    },
+    {
+      question: "ต้องการให้เว็บติดอันดับ Google แบบธรรมชาติ (ไม่เสียเงิน) ต้องทำสิ่งใด?",
+      options: [
+        "ก. SEO (Search Engine Optimization)",
+        "ข. SEM (Search Engine Marketing)",
+        "ค. Email Marketing",
+        "ง. Affiliate Marketing"
+      ],
+      correct: 0,
+      explanation: "ก. SEO คือการปรับแต่งเว็บให้ติดอันดับ Search ธรรมชาติ (Organic)"
+    },
+    {
+      question: "การใช้ Chatbot, AI วิเคราะห์ข้อมูลลูกค้าแบบ Real-time อยู่ในยุคการตลาดใด?",
+      options: [
+        "ก. Marketing 1.0",
+        "ข. Marketing 3.0",
+        "ค. Marketing 4.0",
+        "ง. Marketing 5.0"
+      ],
+      correct: 3,
+      explanation: "ง. Marketing 5.0 = Technology for Humanity (Data-Driven + AI)"
+    },
+    {
+      question: "ข้อแตกต่างระหว่าง 'ขายตรง' (Direct Selling) กับ 'การตลาดทางตรง' (Direct Marketing)?",
+      options: [
+        "ก. ขายตรงใช้พนักงานเผชิญหน้า / การตลาดทางตรงใช้สื่อไม่ต้องเจอหน้า",
+        "ข. ขายตรงเน้นสินค้าอุตสาหกรรม / การตลาดทางตรงเน้นอุปโภคบริโภค",
+        "ค. ขายตรงไม่ต้องมีสินค้า / การตลาดทางตรงต้องมี",
+        "ง. ขายตรงผิดกฎหมาย / การตลาดทางตรงถูกกฎหมาย"
+      ],
+      correct: 0,
+      explanation: "ก. ขายตรง (เช่น แอมเวย์) ใช้คนไปขาย / การตลาดทางตรง (เช่น แคตตาล็อก, อีเมล) ใช้สื่อ"
+    },
+    // --- หมวดที่ 3: บทที่ 13 ---
+    {
+      question: "SME ไทยส่งออกครั้งแรก ต้องการความเสี่ยงต่ำที่สุด ควรใช้วิธีใด?",
+      options: [
+        "ก. การส่งออกทางอ้อม (Indirect Exporting)",
+        "ข. การให้สิทธิบัตร (Licensing)",
+        "ค. การร่วมทุน (Joint Venture)",
+        "ง. การลงทุนโดยตรง (Direct Investment)"
+      ],
+      correct: 0,
+      explanation: "ก. ส่งออกทางอ้อม (ผ่านคนกลาง) เสี่ยงน้อยสุด ลงทุนน้อยสุด แต่กำไรก็น้อยสุด"
+    },
+    {
+      question: "ต้องการ 'ควบคุมเบ็ดเสร็จ' และกำไรสูงสุดในระยะยาว (ยอมรับความเสี่ยงสูงสุด) ควรใช้วิธีใด?",
+      options: [
+        "ก. การส่งออก",
+        "ข. การให้สิทธิแฟรนไชส์",
+        "ค. การลงทุนโดยตรง ",
+        "ง. การร่วมทุน"
+      ],
+      correct: 2,
+      explanation: "ค. Direct Investment คือไปตั้งบริษัท/โรงงานเอง คุมเองหมด เสี่ยงเองหมด"
+    },
+    {
+      question: "McDonald's เปลี่ยนจากเนื้อวัวเป็นไก่/แกะ ในอินเดีย เรียกว่ากลยุทธ์ใด?",
+      options: [
+        "ก. Straight Extension",
+        "ข. Product Adaptation",
+        "ค. Product Invention",
+        "ง. Communication Adaptation"
+      ],
+      correct: 1,
+      explanation: "ข. Product Adaptation ปรับปรุงสินค้าให้เข้ากับท้องถิ่น"
+    },
+    {
+      question: "การขายสินค้าในต่างประเทศต่ำกว่าทุนหรือต่ำกว่าราคาในประเทศตัวเอง เพื่อกำจัดคู่แข่ง คือ?",
+      options: [
+        "ก. Transfer Pricing",
+        "ข. Dumping ",
+        "ค. Standard Pricing",
+        "ง. Dual Pricing"
+      ],
+      correct: 1,
+      explanation: "ข. Dumping หรือการทุ่มตลาด มักผิดกฎหมายการค้าระหว่างประเทศ"
+    },
+    {
+      question: "ปัจจัยใดคือ 'ความเสี่ยงด้านการเมือง' ในธุรกิจระหว่างประเทศ?",
+      options: [
+        "ก. อัตราแลกเปลี่ยนผันผวน",
+        "ข. รสนิยมผู้บริโภคเปลี่ยน",
+        "ค. รัฐบาลยึดกิจการหรือเปลี่ยนนโยบายกีดกัน",
+        "ง. คู่แข่งลดราคาสู้"
+      ],
+      correct: 2,
+      explanation: "ค. การเมือง/กฎหมาย เช่น การยึดทรัพย์ (Expropriation) หรือกีดกันทางการค้า"
+    },
+    {
+      question: "บริษัท A (ไทย) จับมือ บริษัท B (ญี่ปุ่น) ตั้งบริษัทใหม่ C ร่วมกัน คือรูปแบบใด?",
+      options: [
+        "ก. Licensing",
+        "ข. Franchising",
+        "ค. Joint Venture",
+        "ง. Direct Exporting"
+      ],
+      correct: 2,
+      explanation: "ค. Joint Venture (ร่วมทุน) คือสร้างกิจการใหม่ร่วมกัน"
+    },
+    {
+      question: "7-Eleven ในไทย โดย CP All ได้รับสิทธิ์บริหารและใช้แบรนด์จากบริษัทแม่ คือรูปแบบใด?",
+      options: [
+        "ก. Licensing",
+        "ข. Franchising",
+        "ค. Contract Manufacturing",
+        "ง. Turnkey Project"
+      ],
+      correct: 1,
+      explanation: "ข. Franchising (แฟรนไชส์) ครอบคลุมทั้งแบรนด์ ระบบบริหาร และวิธีดำเนินงาน"
+    },
+    {
+      question: "ข้อดีที่สุดของ 'กลยุทธ์มาตรฐานทั่วโลก (Standardized)' คือ?",
+      options: [
+        "ก. ตอบสนองท้องถิ่นได้ดีที่สุด",
+        "ข. ลดต้นทุน ",
+        "ค. หลีกเลี่ยงปัญหากฎหมาย",
+        "ง. สร้างสัมพันธ์รัฐบาล"
+      ],
+      correct: 1,
+      explanation: "ข. ผลิตเหมือนกัน โฆษณาเหมือนกัน ช่วยประหยัดต้นทุนมหาศาล"
+    },
+    {
+      question: "ข้อใดสะท้อนอิทธิพลของ 'วัฒนธรรม' ต่อการตลาดระหว่างประเทศ?",
+      options: [
+        "ก. ภาษีนำเข้า",
+        "ข. การเลือกสีและสัญลักษณ์ในบรรจุภัณฑ์",
+        "ค. อัตราเงินเฟ้อ",
+        "ง. ระบบขนส่ง"
+      ],
+      correct: 1,
+      explanation: "ข. สี ความเชื่อ ภาษา เป็นเรื่องละเอียดอ่อนทางวัฒนธรรม"
+    },
+    // --- หมวดที่ 4: บทที่ 14 ---
+    {
+      question: "ขั้นตอนแรกสุดและสำคัญที่สุดของกระบวนการวิจัยตลาดคือ?",
+      options: [
+        "ก. การเก็บรวบรวมข้อมูล",
+        "ข. การวิเคราะห์ข้อมูล",
+        "ค. การกำหนดปัญหาและวัตถุประสงค์",
+        "ง. การนำเสนอผลงาน"
+      ],
+      correct: 2,
+      explanation: "ค. ถ้ากำหนดปัญหาผิด วิจัยไปก็เสียเปล่า (Garbage in, Garbage out)"
+    },
+    {
+      question: "'ข้อมูลที่ผู้อื่นเก็บรวบรวมไว้แล้ว' เช่น สถิติจากรัฐบาล เรียกว่า?",
+      options: [
+        "ก. ข้อมูลปฐมภูมิ (Primary)",
+        "ข. ข้อมูลทุติยภูมิ (Secondary)",
+        "ค. ข้อมูลเชิงคุณภาพ",
+        "ง. ข้อมูลเชิงปริมาณ"
+      ],
+      correct: 1,
+      explanation: "ข. Secondary Data ข้อมูลมือสอง เอามาใช้ต่อได้เลย ประหยัดเวลา"
+    },
+    {
+      question: "ต้องการทราบ 'ความคิดเห็นเชิงลึก/ความรู้สึก' ควรใช้วิธีใด?",
+      options: [
+        "ก. การสังเกต",
+        "ข. การสัมภาษณ์กลุ่มย่อย ",
+        "ค. การสำรวจทางโทรศัพท์",
+        "ง. การทดลอง"
+      ],
+      correct: 1,
+      explanation: "ข. Focus Group/Interview เหมาะกับการหาข้อมูลเชิงคุณภาพ (Qualitative)"
+    },
+    {
+      question: "ข้อมูลยอดขาย สต็อกสินค้า บัญชี จัดเป็นข้อมูลระบบย่อยใดของ MIS?",
+      options: [
+        "ก. ระบบข้อมูลภายในกิจการ ",
+        "ข. ระบบข่าวกรองการตลาด",
+        "ค. ระบบวิจัยการตลาด",
+        "ง. ระบบสนับสนุนการตัดสินใจ"
+      ],
+      correct: 0,
+      explanation: "ก. Internal Records คือข้อมูลที่เกิดขึ้นจากการทำงานปกติในบริษัท"
+    },
+    {
+      question: "ข้อใด 'ไม่ใช่' ประโยชน์โดยตรงของการวิจัยตลาด?",
+      options: [
+        "ก. ช่วยให้ทราบความต้องการลูกค้า",
+        "ข. ช่วยลดความเสี่ยงในการตัดสินใจ",
+        "ค. รับประกันว่าสินค้าจะขายดี 100%",
+        "ง. ช่วยประเมินผลการตลาด"
+      ],
+      correct: 2,
+      explanation: "ค. วิจัยช่วยลดความเสี่ยง แต่ 'การันตีผลลัพธ์ 100%' ไม่ได้ เพราะมีปัจจัยภายนอกที่คุมไม่ได้"
     }
+  ];
 
-    h1 {
-      margin-top: 0;
-      margin-bottom: 4px;
-      font-size: 1.8rem;
-    }
+  // เตรียม state เริ่มต้น (array ว่างเท่าจำนวนข้อ)
+  useEffect(() => {
+    setUserAnswers(Array(questions.length).fill(null));
+  }, []);
 
-    .subtitle {
-      color: #6b7280;
-      margin-bottom: 20px;
-      font-size: 0.95rem;
-    }
+  // คำนวณสถานะปัจจุบัน
+  const currentAnswer = userAnswers[currentQuestion];
+  const isAnswered = currentAnswer !== null && currentAnswer !== undefined;
 
-    .card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 20px 18px;
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-      margin-bottom: 16px;
-    }
+  const handleAnswerOptionClick = (index) => {
+    if (isAnswered) return; // ถ้าตอบแล้ว ห้ามเปลี่ยน
+    
+    const newAnswers = [...userAnswers];
+    newAnswers[currentQuestion] = index;
+    setUserAnswers(newAnswers);
+  };
 
-    .question-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
+  const handleNextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setHasFinished(true); // มาร์คว่าทำจบแล้วครั้งหนึ่ง
+      setShowScore(true);
     }
+  };
 
-    .question-number {
-      font-weight: 600;
-      font-size: 1rem;
+  const handlePrevQuestion = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
     }
+  };
 
-    .badge {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      background: #eef2ff;
-      color: #4338ca;
-      white-space: nowrap;
-    }
+  const restartQuiz = () => {
+    setUserAnswers(Array(questions.length).fill(null));
+    setCurrentQuestion(0);
+    setShowScore(false);
+    setHasFinished(false);
+  };
 
-    .question-text {
-      font-size: 0.98rem;
-      line-height: 1.7;
-      margin-bottom: 10px;
-      white-space: pre-line;
-    }
+  const calculateScore = () => {
+    return userAnswers.filter((ans, index) => ans === questions[index].correct).length;
+  };
 
-    .choices {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 8px;
-    }
+  const jumpToQuestion = (index) => {
+    setCurrentQuestion(index);
+    setShowScore(false);
+  };
 
-    .choice {
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      padding: 10px 12px;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      cursor: pointer;
-      transition: 0.15s ease;
-      background: #ffffff;
-      position: relative;
-    }
+  // ดึงรายการข้อที่ผิด
+  const getWrongQuestions = () => {
+    return questions.map((q, index) => ({...q, index, userAnswer: userAnswers[index]}))
+      .filter(q => q.userAnswer !== null && q.userAnswer !== q.correct);
+  };
 
-    .choice:hover {
-      border-color: #c7d2fe;
-      background: #f9fafb;
-    }
+  const wrongQuestions = getWrongQuestions();
 
-    .choice.selected {
-      border-color: #4f46e5;
-      background: #eef2ff;
-    }
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-4 font-sans text-slate-800">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
+        
+        {/* Header Section */}
+        <div className="bg-indigo-600 p-6 text-white relative">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+              <BookOpen className="w-6 h-6" />
+              แบบทดสอบวิชา การตลาด
+            </h1>
+            {!showScore && (
+              <div className="flex items-center gap-2">
+                 {hasFinished && (
+                  <button 
+                    onClick={() => setShowScore(true)}
+                    className="text-xs bg-indigo-500 hover:bg-indigo-400 px-2 py-1 rounded text-white mr-2 transition-colors"
+                  >
+                    ดูคะแนน
+                  </button>
+                 )}
+                <span className="text-sm font-medium bg-indigo-500 px-3 py-1 rounded-full whitespace-nowrap">
+                  {currentQuestion + 1} / {questions.length}
+                </span>
+              </div>
+            )}
+          </div>
+          <p className="text-indigo-100 mt-2 text-sm">ทบทวนแต่ละบท</p>
+        </div>
 
-    .choice.correct {
-      border-color: #16a34a;
-      background: #ecfdf3;
-    }
+        {showScore ? (
+          // Score Screen
+          <div className="p-8 space-y-6">
+            <div className="text-center">
+              <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                <Trophy className="w-12 h-12 text-yellow-600" />
+              </div>
+              <h2 className="text-3xl font-bold text-slate-800">คะแนนรวมของคุณ</h2>
+              <div className="text-6xl font-extrabold text-indigo-600 my-4">
+                {calculateScore()} <span className="text-2xl text-slate-400 font-normal">/ {questions.length}</span>
+              </div>
+              <p className="text-slate-500 mb-6">
+                {calculateScore() > 35 ? "สุดยอดมากครับน้องออมทรัพย์! เตรียม A ได้เลย!" : 
+                 calculateScore() > 25 ? "ทำได้ดีครับ! ทบทวนจุดที่ผิดอีกนิดรับรองเป๊ะ" : "พยายามอีกนิดนะครับ ลองทบทวนข้อที่ผิดด้านล่างดูนะ"}
+              </p>
+              
+              <button 
+                onClick={restartQuiz}
+                className="flex items-center justify-center gap-2 w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg active:scale-95 mb-8"
+              >
+                <RefreshCcw className="w-5 h-5" /> ทำแบบทดสอบใหม่
+              </button>
+            </div>
 
-    .choice.incorrect-selected {
-      border-color: #dc2626;
-      background: #fef2f2;
-    }
+            {/* Wrong Answers Section */}
+            {wrongQuestions.length > 0 && (
+              <div className="border-t border-slate-200 pt-6">
+                <h3 className="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
+                  <XCircle className="w-6 h-6 text-red-500" /> 
+                  รายการข้อที่ตอบผิด ({wrongQuestions.length} ข้อ)
+                </h3>
+                <p className="text-sm text-slate-500 mb-4">คลิกที่รายการเพื่อดูเฉลยละเอียด</p>
+                
+                <div className="space-y-3">
+                  {wrongQuestions.map((q) => (
+                    <button 
+                      key={q.index}
+                      onClick={() => jumpToQuestion(q.index)}
+                      className="w-full text-left p-4 bg-red-50 hover:bg-red-100 border border-red-100 rounded-xl transition-all flex items-start justify-between group"
+                    >
+                      <div>
+                        <span className="text-xs font-bold text-red-500 bg-white px-2 py-0.5 rounded border border-red-200 mb-1 inline-block">
+                          ข้อที่ {q.index + 1}
+                        </span>
+                        <p className="text-slate-700 font-medium line-clamp-2">{q.question}</p>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-red-300 group-hover:text-red-500 mt-2" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          // Quiz Screen
+          <div className="p-6 pb-24 relative min-h-[500px]"> 
+            {/* Added pb-24 for bottom nav space */}
+            
+            {/* Progress Bar */}
+            <div className="w-full bg-slate-100 rounded-full h-2.5 mb-6">
+              <div 
+                className="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" 
+                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+              ></div>
+            </div>
 
-    .choice-label {
-      flex-shrink: 0;
-      font-weight: 600;
-      width: 20px;
-    }
+            {hasFinished && (
+               <button 
+                  onClick={() => setShowScore(true)}
+                  className="mb-4 text-indigo-600 hover:text-indigo-800 flex items-center gap-1 text-sm font-medium"
+                >
+                  <ArrowLeft className="w-4 h-4" /> กลับไปหน้าสรุปคะแนน
+               </button>
+            )}
 
-    .choice-text {
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
+            {/* Question */}
+            <h2 className="text-xl font-semibold mb-6 text-slate-800 leading-relaxed animate-fade-in">
+              {questions[currentQuestion].question}
+            </h2>
 
-    .pill {
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      margin-left: auto;
-    }
+            {/* Options */}
+            <div className="space-y-3">
+              {questions[currentQuestion].options.map((option, index) => {
+                let buttonStyle = "w-full text-left p-4 rounded-xl border-2 transition-all duration-200 font-medium ";
+                
+                if (isAnswered) {
+                  if (index === questions[currentQuestion].correct) {
+                    buttonStyle += "bg-green-50 border-green-500 text-green-700"; // Correct Answer
+                  } else if (index === currentAnswer) {
+                    buttonStyle += "bg-red-50 border-red-500 text-red-700"; // User's Wrong Answer
+                  } else {
+                    buttonStyle += "bg-slate-50 border-slate-100 text-slate-400 opacity-60"; // Others
+                  }
+                } else {
+                  buttonStyle += "bg-white border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 text-slate-600 cursor-pointer active:scale-[0.99]";
+                }
 
-    .pill-correct {
-      background: #bbf7d0;
-      color: #166534;
-    }
+                return (
+                  <button 
+                    key={index}
+                    onClick={() => handleAnswerOptionClick(index)}
+                    className={buttonStyle}
+                    disabled={isAnswered}
+                  >
+                    <div className="flex items-start gap-3">
+                      {isAnswered && index === questions[currentQuestion].correct && (
+                        <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      )}
+                      {isAnswered && index === currentAnswer && index !== questions[currentQuestion].correct && (
+                        <XCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                      )}
+                      <span>{option}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
 
-    .pill-your {
-      background: #e0f2fe;
-      color: #075985;
-    }
+            {/* Explanation */}
+            {isAnswered && (
+              <div className="mt-6 animate-fade-in">
+                <div className={`p-4 rounded-xl mb-6 border-l-4 ${currentAnswer === questions[currentQuestion].correct ? 'bg-green-50 border-green-500 text-green-800' : 'bg-red-50 border-red-500 text-red-800'}`}>
+                  <h3 className="font-bold flex items-center gap-2 mb-1">
+                    <Award className="w-4 h-4" />
+                    คำอธิบาย:
+                  </h3>
+                  <p className="text-sm opacity-90">{questions[currentQuestion].explanation}</p>
+                </div>
+              </div>
+            )}
 
-    .explanation {
-      margin-top: 14px;
-      padding: 12px 12px;
-      border-radius: 12px;
-      background: #f1f5f9;
-      font-size: 0.92rem;
-      line-height: 1.7;
-      white-space: pre-line;
-    }
+            {/* Bottom Navigation */}
+            <div className="absolute bottom-0 left-0 w-full p-4 bg-white border-t border-slate-100 flex gap-3">
+               <button 
+                  onClick={handlePrevQuestion}
+                  disabled={currentQuestion === 0}
+                  className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+                    currentQuestion === 0 
+                      ? "bg-slate-100 text-slate-400 cursor-not-allowed" 
+                      : "bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                  }`}
+                >
+                  <ChevronLeft className="w-5 h-5" /> ย้อนกลับ
+                </button>
 
-    .ex-title {
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
+                <button 
+                  onClick={handleNextQuestion}
+                  className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95"
+                >
+                  {currentQuestion === questions.length - 1 ? "ดูผลคะแนน" : "ข้อต่อไป"} <ChevronRight className="w-5 h-5" />
+                </button>
+            </div>
 
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .left-controls,
-    .right-controls {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 500;
-      transition: 0.15s ease;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-primary {
-      background: #4f46e5;
-      color: #ffffff;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: #4338ca;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: #374151;
-      border: 1px solid #d1d5db;
-    }
-
-    .btn-outline:hover:not(:disabled) {
-      background: #f3f4f6;
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: #4b5563;
-    }
-
-    .btn-ghost:hover:not(:disabled) {
-      background: #e5e7eb;
-    }
-
-    .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.86rem;
-      color: #6b7280;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-
-    .progress-bar {
-      flex: 1;
-      height: 6px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      overflow: hidden;
-    }
-
-    .progress-inner {
-      height: 100%;
-      background: linear-gradient(90deg, #4f46e5, #6366f1);
-      width: 0%;
-      transition: width 0.2s ease;
-    }
-
-    .summary-card {
-      background: #111827;
-      color: #f9fafb;
-      border-radius: 16px;
-      padding: 16px 14px;
-      margin-top: 16px;
-      font-size: 0.94rem;
-    }
-
-    .summary-title {
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .summary-highlight {
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-
-    .summary-details {
-      margin-top: 4px;
-      font-size: 0.88rem;
-      color: #e5e7eb;
-    }
-
-    .pill-small {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      margin-right: 6px;
-      margin-top: 4px;
-    }
-
-    .pill-correct-q {
-      background: #bbf7d0;
-      color: #166534;
-    }
-
-    .pill-wrong-q {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-
-    .pill-unanswered {
-      background: #e5e7eb;
-      color: #4b5563;
-    }
-
-    .question-jumps {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .jump-btn {
-      min-width: 30px;
-      height: 30px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-      font-size: 0.8rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.15s ease;
-    }
-
-    .jump-btn:hover {
-      background: #f3f4f6;
-    }
-
-    .jump-current {
-      border-color: #4f46e5;
-      background: #eef2ff;
-      font-weight: 600;
-    }
-
-    .jump-answered {
-      border-color: #16a34a;
-    }
-
-    .jump-wrong {
-      border-color: #dc2626;
-    }
-
-    @media (max-width: 640px) {
-      .card {
-        padding: 16px 12px;
-      }
-      .question-text {
-        font-size: 0.95rem;
-      }
-      .choice-text {
-        font-size: 0.9rem;
-      }
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .left-controls,
-      .right-controls {
-        justify-content: space-between;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>แบบทดสอบการตลาด</h1>
-    <div class="subtitle">
-      บทที่ 8, 11, 12, 13, 14 — รวม 40 ข้อ | เลือกคำตอบ ก–ง, ตรวจเฉลยรายข้อ,
-      และส่งคะแนนรวมได้
+          </div>
+        )}
+      </div>
     </div>
+  );
+};
 
-    <div class="card" id="quiz-card">
-      <div class="question-header">
-        <div class="question-number" id="q-number"></div>
-        <div class="badge" id="q-badge"></div>
-      </div>
-      <div class="question-text" id="q-text"></div>
-      <div class="choices" id="choices-container"></div>
-      <div class="explanation" id="explanation" style="display: none;">
-        <div class="ex-title">คำอธิบาย:</div>
-        <div id="ex-text"></div>
-      </div>
-
-      <div class="controls">
-        <div class="left-controls">
-          <button class="btn-outline" id="btn-prev">
-            ← ข้อก่อนหน้า
-          </button>
-          <button class="btn-outline" id="btn-next">
-            ข้อถัดไป →
-          </button>
-        </div>
-        <div class="right-controls">
-          <button class="btn-ghost" id="btn-check">
-            ตรวจคำตอบข้อนี้
-          </button>
-          <button class="btn-primary" id="btn-submit-all">
-            ส่งคำตอบทั้งหมด
-          </button>
-        </div>
-      </div>
-
-      <div class="status-bar">
-        <span id="status-text"></span>
-        <div class="progress-bar">
-          <div class="progress-inner" id="progress-inner"></div>
-        </div>
-      </div>
-    </div>
-
-    <div id="summary" class="summary-card" style="display: none;"></div>
-
-    <div class="card">
-      <div style="font-weight:600; margin-bottom:6px;">ไปยังข้ออื่นอย่างรวดเร็ว</div>
-      <div style="font-size:0.85rem; color:#6b7280; margin-bottom:6px;">
-        วงกลม = ยังไม่ได้ทำ, เส้นเขียว = ตอบถูก, เส้นแดง = ตอบผิด
-      </div>
-      <div class="question-jumps" id="question-jumps"></div>
-    </div>
-  </div>
-
-  <script>
-    const questions = [
-      {
-        id: 1,
-        chapter: "บทที่ 8: STP & Segmentation",
-        question: `ข้อใดอธิบายความหมายของ "การแบ่งส่วนตลาด" (Market Segmentation) ได้ถูกต้องและชัดเจนที่สุด?`,
-        choices: [
-          "ก. บริษัทน้ำดื่ม A ผลิตน้ำดื่มบรรจุขวดแบบมาตรฐานเพียงแบบเดียว และวางจำหน่ายทั่วประเทศโดยมองว่าผู้บริโภคทุกคนมีความกระหายน้ำเหมือนกัน",
-          "ข. แบรนด์เสื้อผ้า B ทำการสำรวจและจัดกลุ่มลูกค้าออกเป็น \"กลุ่มวัยรุ่นที่ชอบสตรีทแฟชั่น\" และ \"กลุ่มวัยทำงานที่ชอบความเรียบหรู\" เพื่อเตรียมนำเสนอสินค้าให้ตรงใจแต่ละกลุ่ม",
-          "ค. ร้านกาแฟ C ตัดสินใจเลือกเปิดสาขาเฉพาะในย่านสีลมและสาทรเท่านั้น เพราะวิเคราะห์แล้วว่าเป็นทำเลที่มีศักยภาพและสร้างกำไรได้สูงสุด",
-          "ง. บริษัทสมาร์ทโฟน D สร้างจุดขายว่าโทรศัพท์ของตนมีกล้องถ่ายรูปที่ชัดที่สุดในโลก เพื่อสร้างภาพจำที่แตกต่างจากคู่แข่งในใจผู้บริโภค"
-        ],
-        correctIndex: 1,
-        explanation: `การแบ่งส่วนตลาดคือการแบ่งตลาดรวมออกเป็นกลุ่มย่อยที่มีความต้องการ/พฤติกรรมคล้ายกัน เพื่อออกแบบข้อเสนอให้ตรงใจมากขึ้น
-- ข้อ ข ถูกต้อง เพราะมีการ “จัดกลุ่ม” ลูกค้าตามรสนิยม (สตรีทแฟชั่น vs เรียบหรู) ชัดเจน
-- ข้อ ก เป็นการตลาดแบบรวม (Mass Marketing) มองว่าทุกคนเหมือนกัน ไม่แบ่งส่วน
-- ข้อ ค เป็นขั้นตอนการ “เลือกตลาดเป้าหมาย” (Targeting) หลังจากแบ่งส่วนแล้ว
-- ข้อ ง เป็นเรื่อง “การกำหนดตำแหน่งผลิตภัณฑ์” (Positioning) คือสร้างภาพจำว่ากล้องชัดที่สุด`
-      },
-      {
-        id: 2,
-        chapter: "บทที่ 8: STP & Segmentation",
-        question: `ข้อใด ไม่ใช่ เหตุผลหรือวัตถุประสงค์หลักของการทำ "การแบ่งส่วนตลาด" (Market Segmentation)?`,
-        choices: [
-          "ก. เพื่อให้ธุรกิจสามารถออกแบบผลิตภัณฑ์ที่ตอบสนองความต้องการของลูกค้าได้แม่นยำขึ้น",
-          "ข. เพื่อลดต้นทุนการผลิตและการดำเนินงานให้ต่ำที่สุดโดยการเน้นผลิตสินค้ามาตรฐานเพียงรูปแบบเดียว",
-          "ค. เพื่อช่วยให้ธุรกิจสามารถรักษาฐานลูกค้าเดิมไว้ได้ โดยการนำเสนอสิ่งที่ตรงใจพวกเขาอย่างต่อเนื่อง",
-          "ง. เพื่อให้สามารถโฟกัสการสื่อสารและเลือกใช้สื่อโฆษณาได้ตรงกับกลุ่มเป้าหมายอย่างมีประสิทธิภาพ"
-        ],
-        correctIndex: 1,
-        explanation: `การแบ่งส่วนตลาดมุ่ง “ตอบโจทย์ลูกค้าแต่ละกลุ่ม” มากกว่าการลดต้นทุนให้ต่ำสุด
-- ข้อ ข ไม่ใช่เหตุผลของการแบ่งส่วนตลาด แต่เป็นแนวคิดตลาดรวม (Mass Marketing) ที่ผลิตแบบเดียวจำนวนมากเพื่อลดต้นทุน
-- ข้อ ก คือเป้าหมายหลักของ Segmentation: ออกแบบสินค้าให้ตรงความต้องการ
-- ข้อ ค เน้นการรักษาลูกค้าเดิมด้วยข้อเสนอที่ตรงใจเสมอ
-- ข้อ ง เน้นการเลือกสื่อ/ข้อความให้เหมาะกับแต่ละกลุ่มเป้าหมาย`
-      },
-      {
-        id: 3,
-        chapter: "บทที่ 8: Segmentation Benefits",
-        question: `สถานการณ์ใดต่อไปนี้ สะท้อนถึง "ประโยชน์ของการแบ่งส่วนตลาด" ในเรื่องการมองเห็นโอกาสทางการตลาดได้ชัดเจนที่สุด?`,
-        choices: [
-          "ก. บริษัทน้ำอัดลมยักษ์ใหญ่ทุ่มงบโฆษณา 100 ล้านบาทผ่านทีวีช่องหลักทุกช่อง เพื่อกระตุ้นให้คนไทยทุกคนดื่มน้ำอัดลมมากขึ้นในช่วงหน้าร้อน",
-          "ข. แบรนด์เครื่องสำอาง A พบว่ามีกลุ่ม \"ผู้ชายวัยทำงาน\" ที่ต้องการครีม \"ซึมไว ไม่เหนียวเหนอะหนะ\" ซึ่งยังไม่มีใครทำ จึงออกสินค้าใหม่มาเจาะกลุ่มนี้ทันที",
-          "ค. ร้านสะดวกซื้อ B สั่งสินค้าทุกประเภทในปริมาณเท่าๆ กันทุกสาขา ไม่ว่าจะหน้าโรงเรียนหรือกลางสีลม",
-          "ง. โรงงานผลิตเสื้อยืด C ผลิตเสื้อยืดสีขาว Free Size เพียงแบบเดียวจำนวนมากเพื่อให้ได้ต้นทุนต่อตัวถูกที่สุด"
-        ],
-        correctIndex: 1,
-        explanation: `ประโยชน์สำคัญของการแบ่งส่วนตลาดคือ “มองเห็นช่องว่างและโอกาสใหม่ ๆ”
-- ข้อ ข ถูกต้อง: การวิเคราะห์ส่วนตลาดทำให้พบกลุ่มผู้ชายวัยทำงานที่มีความต้องการเฉพาะ ซึ่งคู่แข่งยังไม่ตอบสนอง
-- ข้อ ก เป็น Mass Marketing หว่านทั้งตลาด ไม่ได้ใช้ประโยชน์จาก Segmentation
-- ข้อ ค แสดงการจัดสต็อกแบบไม่สนใจความต่างของแต่ละทำเล
-- ข้อ ง เน้นผลิตจำนวนมากลดต้นทุน แต่ไม่ใช่การใช้ประโยชน์จากการแบ่งส่วนตลาด`
-      },
-      {
-        id: 4,
-        chapter: "บทที่ 8: เกณฑ์การแบ่งส่วนตลาด",
-        question: `ตลาดแชมพู: Head & Shoulders \"ขจัดรังแค\", Dove \"ผมนุ่มชุ่มชื้น\", Pantene \"ลดผมขาดหลุดร่วง\"  
-การแบ่งกลุ่มตาม “สรรพคุณ/ผลลัพธ์ที่ลูกค้าต้องการ” เป็นเกณฑ์การแบ่งส่วนตลาดแบบใด?`,
-        choices: [
-          "ก. เกณฑ์ประชากรศาสตร์ (Demographic Segmentation)",
-          "ข. เกณฑ์จิตวิทยา (Psychographic Segmentation)",
-          "ค. เกณฑ์พฤติกรรม (Behavioristic Segmentation)",
-          "ง. เกณฑ์ภูมิศาสตร์ (Geographic Segmentation)"
-        ],
-        correctIndex: 2,
-        explanation: `การแบ่งตามผลลัพธ์ที่ลูกค้าต้องการจากสินค้า เรียกว่า “Benefit Sought” อยู่ในเกณฑ์พฤติกรรม (Behavioristic Segmentation)
-- ข้อ ค ถูกต้อง: ลูกค้าแต่ละคนมีปัญหาผมต่างกันและแสวงหาผลประโยชน์คนละแบบจากแชมพู
-- ข้อ ก เน้นเพศ อายุ รายได้ ฯลฯ
-- ข้อ ข เน้นไลฟ์สไตล์ บุคลิกภาพ ชนชั้น
-- ข้อ ง เน้นภูมิประเทศ/สภาพอากาศ`
-      },
-      {
-        id: 5,
-        chapter: "บทที่ 8: ขั้นตอน STP",
-        question: `ตามกระบวนการ STP (ขั้นตอนที่ 1–2 แบ่งส่วนตลาดและพัฒนาโฉมหน้ากลุ่มลูกค้าเสร็จแล้ว)  
-ขั้นตอนที่ 3 ถัดไปคือข้อใด?`,
-        choices: [
-          "ก. ตัดสินใจเลือกกลุ่มลูกค้าที่ดีที่สุดมาเป็นตลาดเป้าหมาย (Select target segments)",
-          "ข. ทำการประเมินความน่าสนใจและศักยภาพของแต่ละส่วนตลาด (Develop measure of segment attractiveness)",
-          "ค. สร้างจุดยืนและกำหนดตำแหน่งผลิตภัณฑ์ให้โดดเด่น (Develop positioning for target segments)",
-          "ง. ออกแบบส่วนประสมทางการตลาด (4Ps) ให้เหมาะกับกลุ่มเป้าหมาย (Develop a marketing mix for each segment)"
-        ],
-        correctIndex: 1,
-        explanation: `ลำดับขั้นตอน STP ตามตำรา:
-1–2: แบ่งส่วนตลาดและอธิบายลักษณะกลุ่ม  
-3: ประเมินความน่าสนใจของแต่ละส่วนตลาด  
-4: เลือกตลาดเป้าหมาย  
-5: กำหนดตำแหน่ง  
-6: พัฒนา Marketing Mix
-- ข้อ ข จึงถูกต้อง (ขั้นที่ 3)
-- ข้อ ก เป็นขั้นที่ 4 (เลือกเป้าหมายหลังประเมินแล้ว)
-- ข้อ ค เป็นขั้นที่ 5
-- ข้อ ง เป็นขั้นที่ 6`
-      },
-      {
-        id: 6,
-        chapter: "บทที่ 8: กลยุทธ์เลือกตลาดเป้าหมาย",
-        question: `"โค้กสมัยก่อนผลิตรสเดียว ขวดแบบเดียว ขายคนทั้งโลกด้วยข้อความโฆษณาเดียวกัน"  
-เป็นกลยุทธ์การเลือกตลาดเป้าหมายแบบใด?`,
-        choices: [
-          "ก. กลยุทธ์ตลาดหลายส่วน (Differentiated Marketing)",
-          "ข. กลยุทธ์เฉพาะส่วนตลาด (Concentrated Marketing)",
-          "ค. กลยุทธ์ตลาดรวม (Undifferentiated Marketing)",
-          "ง. กลยุทธ์การตลาดจุลภาค (Micromarketing)"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: Undifferentiated Marketing มองว่าลูกค้าทุกคนมีความต้องการเหมือนกัน ใช้ 4Ps ชุดเดียวกับทั้งตลาด  
-- ข้อ ก คือทำหลายแบบ เจาะหลายส่วนตลาด
-- ข้อ ข คือเจาะลึกเพียงส่วนเดียว
-- ข้อ ง คือปรับให้เฉพาะรายบุคคลหรือรายพื้นที่เล็ก ๆ`
-      },
-      {
-        id: 7,
-        chapter: "บทที่ 8: กลยุทธ์หลายส่วนตลาด",
-        question: `Honda ผลิตรุ่น City, Civic, Accord เพื่อตอบโจทย์คนเริ่มทำงาน คนชอบสปอร์ต และผู้บริหาร  
-กรณีนี้ใช้กลยุทธ์ใด?`,
-        choices: [
-          "ก. กลยุทธ์ตลาดรวม (Undifferentiated Marketing)",
-          "ข. กลยุทธ์หลายส่วนตลาด (Differentiated Marketing)",
-          "ค. กลยุทธ์เฉพาะส่วนตลาด (Concentrated Marketing)",
-          "ง. กลยุทธ์การตลาดส่วนบุคคล (Individual Marketing)"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Differentiated Marketing = เลือกหลายกลุ่มเป้าหมายและออกแบบผลิตภัณฑ์หลายรุ่นให้ต่างกันเพื่อเจาะแต่ละกลุ่ม  
-- ข้อ ก คือแบบเดียวทั้งตลาด
-- ข้อ ค คือเจาะส่วนเดียว เช่น เจาะแต่กลุ่มรถสปอร์ตหรู
-- ข้อ ง คือปรับระดับบุคคล เช่น รถสั่งทำพิเศษทีละคัน`
-      },
-      {
-        id: 8,
-        chapter: "บทที่ 8: กลยุทธ์เฉพาะส่วนตลาด",
-        question: `ยาสระผม Nizoral เจาะเฉพาะคนที่มีปัญหารังแค/เชื้อราบนหนังศีรษะ ไม่เน้นกลุ่มทั่วไป  
-กลยุทธ์นี้คืออะไร?`,
-        choices: [
-          "ก. กลยุทธ์ตลาดรวม (Undifferentiated Marketing)",
-          "ข. กลยุทธ์หลายส่วนตลาด (Differentiated Marketing)",
-          "ค. กลยุทธ์เฉพาะส่วนตลาด (Concentrated Marketing)",
-          "ง. กลยุทธ์การสร้างความแตกต่าง (Differentiation Strategy)"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: Concentrated Marketing หรือ Single Segment Strategy = ทุ่มทรัพยากรเจาะเพียงส่วนตลาดเดียวที่ถนัด เช่น ยารังแคเฉพาะทาง  
-- ข้อ ก คือขายสูตรเดียวให้ทุกกลุ่ม
-- ข้อ ข คือมีหลายสูตรหลายกลุ่ม
-- ข้อ ง เป็นแนวคิดการสร้างความแตกต่างโดยรวม ไม่ใช่ชื่อกลยุทธ์เลือกตลาดเป้าหมาย`
-      },
-      {
-        id: 9,
-        chapter: "บทที่ 8: Positioning",
-        question: `แบรนด์รถยนต์ Volvo สร้างภาพว่าเป็น \"รถที่ปลอดภัยที่สุด\" เมื่อเทียบกับคู่แข่ง  
-ตรงกับคำศัพท์ข้อใดมากที่สุด?`,
-        choices: [
-          "ก. การแบ่งส่วนตลาด (Market Segmentation)",
-          "ข. การเลือกตลาดเป้าหมาย (Market Targeting)",
-          "ค. การกำหนดตำแหน่งผลิตภัณฑ์ (Product Positioning)",
-          "ง. การสร้างตราสินค้า (Branding)"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: Positioning คือการสร้าง “จุดยืน/ภาพพจน์” ที่ชัดเจนและแตกต่างในใจผู้บริโภค เช่น Volvo = ปลอดภัย  
-- ข้อ ก คือการแบ่งกลุ่มลูกค้า
-- ข้อ ข คือการเลือกกลุ่มที่จะเน้น
-- ข้อ ง คือเรื่องชื่อ โลโก้ อัตลักษณ์แบรนด์โดยรวม`
-      },
-      {
-        id: 10,
-        chapter: "บทที่ 8: การสร้างความแตกต่าง",
-        question: `Singapore Airlines โดดเด่นเรื่องความสุภาพและคุณภาพการบริการของพนักงานต้อนรับบนเครื่อง  
-เป็นการสร้างความแตกต่างด้านใด?`,
-        choices: [
-          "ก. ผลิตภัณฑ์ (Product Differentiation)",
-          "ข. ภาพลักษณ์ (Image Differentiation)",
-          "ค. ช่องทางจัดจำหน่าย (Channel Differentiation)",
-          "ง. บุคลากร (Personnel Differentiation)"
-        ],
-        correctIndex: 3,
-        explanation: `- ข้อ ง ถูกต้อง: Personnel Differentiation = เน้นความสามารถ ความใส่ใจ และทักษะของพนักงานให้เหนือคู่แข่ง  
-- ข้อ ก เน้นตัวสินค้า/บริการหลักเช่นเบาะที่นั่ง เครื่องบินใหม่
-- ข้อ ข เน้นภาพลักษณ์ผ่านสัญลักษณ์ เรื่องราว
-- ข้อ ค เน้นช่องทางจัดจำหน่ายหรือการเข้าถึงที่ต่างจากคู่แข่ง`
-      },
-      {
-        id: 11,
-        chapter: "บทที่ 8: วงจรชีวิตผลิตภัณฑ์",
-        question: `สมาร์ทโฟนจอพับ (Foldable Phone) เริ่มมียอดขายพุ่งเร็ว ลูกค้าเริ่มรู้จักมากขึ้น และคู่แข่งเริ่มเข้ามาเพิ่ม  
-สินค้าน่าจะอยู่ช่วงใดของวงจรชีวิตผลิตภัณฑ์ (PLC)?`,
-        choices: [
-          "ก. ขั้นแนะนำ (Introduction)",
-          "ข. ขั้นเจริญเติบโต (Growth)",
-          "ค. ขั้นเติบโตเต็มที่หรืออิ่มตัว (Maturity)",
-          "ง. ขั้นถดถอย (Decline)"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: ช่วง Growth มียอดขายโตเร็ว ลูกค้ารู้จักมากขึ้น และเริ่มมีคู่แข่งเข้ามา  
-- ข้อ ก คือช่วงเริ่มต้น คนยังไม่รู้จัก ยอดขายยังน้อย
-- ข้อ ค คือยอดขายทรงตัว แข่งขันด้านราคา/ส่วนแบ่ง
-- ข้อ ง คือยอดขายตก ตลาดเริ่มหด`
-      },
-      {
-        id: 12,
-        chapter: "บทที่ 8: กลยุทธ์ตาม PLC",
-        question: `เมื่อสินค้าอยู่ในขั้นแนะนำ (Introduction Stage) ลูกค้าส่วนใหญ่ยังไม่รู้จัก บริษัทควรวางกลยุทธ์ Promotion อย่างไร?`,
-        choices: [
-          "ก. ลดราคาสินค้าทันทีเพื่อแย่งลูกค้าจากคู่แข่ง",
-          "ข. โฆษณาแบบเตือนความจำ (Reminder) ให้ลูกค้าไม่ลืมแบรนด์",
-          "ค. ทุ่มงบโฆษณาเพื่อสร้างการรับรู้ (Awareness) และกระตุ้นให้ทดลองใช้",
-          "ง. ตัดงบโฆษณาออกทั้งหมดเพื่อลดต้นทุน"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: ในช่วง Introduction เป้าหมายคือทำให้ตลาด “รู้จักและกล้าลอง” สินค้าใหม่  
-- ข้อ ก เหมาะกับตลาดที่มีคู่แข่งชัดและลูกค้ารู้จักสินค้าแล้ว
-- ข้อ ข ใช้ในช่วงต่อ ๆ มาเมื่อตลาดเริ่มคุ้นเคยแล้ว
-- ข้อ ง ตัดงบโฆษณาจะทำให้สินค้ายิ่งไม่เป็นที่รู้จัก`
-      },
-      {
-        id: 13,
-        chapter: "บทที่ 8: เครื่องมือวางตำแหน่ง",
-        question: `กราฟแกนตั้ง–แกนนอน (เช่น ราคา vs คุณภาพ) ที่ใช้ดูว่าแบรนด์เราอยู่จุดไหนเทียบคู่แข่งในสายตาผู้บริโภค เรียกว่าอะไร?`,
-        choices: [
-          "ก. SWOT Analysis",
-          "ข. Positioning Map (Perceptual Map)",
-          "ค. Marketing Mix Model",
-          "ง. Product Life Cycle Graph"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Perceptual/Positioning Map ใช้แสดงตำแหน่งแบรนด์ในมิติต่าง ๆ เมื่อเทียบกับคู่แข่ง  
-- ข้อ ก เป็นการวิเคราะห์ จุดแข็ง/อ่อน โอกาส/อุปสรรค
-- ข้อ ค แบบจำลองส่วนประสมการตลาด
-- ข้อ ง กราฟวงจรชีวิตผลิตภัณฑ์`
-      },
-      {
-        id: 14,
-        chapter: "บทที่ 8: รูปแบบการวางตำแหน่ง",
-        question: `แบรนด์กระเป๋า Hermès เน้นความหรูหรา ภาคภูมิใจ และสถานะทางสังคม มากกว่าฟังก์ชัน  
-เป็นการวางตำแหน่งแบบใด?`,
-        choices: [
-          "ก. Functional Positioning (จุดยืนด้านการใช้งาน)",
-          "ข. Emotional Positioning (จุดยืนด้านอารมณ์)",
-          "ค. Differentiation Positioning (จุดยืนด้านเทคโนโลยี)",
-          "ง. Price Positioning (จุดยืนด้านราคาประหยัด)"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Emotional Positioning = เน้นความรู้สึก ภาพลักษณ์ และสถานะทางสังคมของผู้ใช้  
-- ข้อ ก เน้นคุณสมบัติใช้งาน เช่น ใส่ของได้เยอะ ทนทาน
-- ข้อ ค เน้นความต่างทางเทคโนโลยี/นวัตกรรม
-- ข้อ ง เน้นราคาถูกหรือคุ้มค่า`
-      },
-      {
-        id: 15,
-        chapter: "บทที่ 8: สโลแกน",
-        question: `จากหลักการสโลแกนที่ดี (สั้น จำง่าย มีจังหวะ) ข้อใดเป็นตัวอย่างสโลแกนที่ \"ไม่ดี\" มากที่สุด?`,
-        choices: [
-          "ก. \"เป้าหมายมีไว้พุ่งชน\"",
-          "ข. \"หอมกรุ่นจากเตาทุกวัน\"",
-          "ค. \"เราคือผู้นำด้านการผลิตสินค้าอุปโภคบริโภคที่มีมาตรฐานสากลและใส่ใจสิ่งแวดล้อมอย่างยั่งยืน\"",
-          "ง. \"คิดจะดื่ม ดื่มคริสตัล\""
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: ยาว ใช้ภาษาทางการ/วิชาการมาก จำยาก ไม่มีจังหวะหรือลูกเล่น  
-- ข้อ ก, ข, ง สั้น กระชับ คล้องจอง จดจำง่าย จึงเป็นสโลแกนที่ดีกว่า`
-      },
-      {
-        id: 16,
-        chapter: "บทที่ 8: แนวคิดการแข่งขัน",
-        question: `ตลาดยาสีฟัน: แบรนด์ A สมุนไพรสีดำ, แบรนด์ B เจลสีฟ้าใส แต่ทั้งคู่ถือว่าแข่งขันกัน เพราะเหตุใด?`,
-        choices: [
-          "ก. เพราะทั้งคู่ตั้งราคาขายใกล้เคียงกัน",
-          "ข. เพราะทั้งคู่ตอบสนองความต้องการ (Need) กลุ่มเดียวกัน คือดูแลความสะอาดช่องปาก",
-          "ค. เพราะทั้งคู่ใช้พรีเซนเตอร์ดาราวัยรุ่นเหมือนกัน",
-          "ง. เพราะทั้งคู่วางจำหน่ายในร้าน 7-Eleven เหมือนกัน"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: ตามแนวคิดการแข่งขันทางการตลาด สิ่งที่ทำให้เป็นคู่แข่งกันคือการตอบสนอง “Need เดียวกัน” แม้รูปแบบสินค้าไม่เหมือนกัน  
-- ข้อ ก, ค, ง เป็นเพียงรายละเอียดปลีกย่อย ราคา พรีเซนเตอร์ ช่องทาง ไม่ใช่แกนหลักของการแข่งขันเชิง Need`
-      },
-      {
-        id: 17,
-        chapter: "บทที่ 11: 4Ps & 4Cs",
-        question: `หากมองจากมุมลูกค้า (4Cs) ส่วนผสมทางการตลาดด้าน \"ราคา (Price)\" จะเทียบได้กับข้อใด?`,
-        choices: [
-          "ก. ความสะดวกสบายในการซื้อ (Convenience)",
-          "ข. การสื่อสาร (Communication)",
-          "ค. ต้นทุนของลูกค้า (Customer Cost)",
-          "ง. การแก้ปัญหาให้ลูกค้า (Customer Solution)"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: Price ในมุมลูกค้าคือ Cost ที่ต้องจ่าย ไม่ใช่แค่เงิน แต่รวมเวลาและความพยายามด้วย  
-4Ps → 4Cs  
-Product → Customer Solution  
-Price → Customer Cost  
-Place → Convenience  
-Promotion → Communication`
-      },
-      {
-        id: 18,
-        chapter: "บทที่ 11: ระดับผลิตภัณฑ์",
-        question: `โรงแรมให้ห้องพักสะอาดปลอดภัย + บริการสปาฟรี อาหารเช้านานาชาติ รถรับส่งสนามบิน 24 ชม.  
-ส่วนที่ “เพิ่มเติมเข้ามาเหนือความคาดหวัง” คือระดับผลิตภัณฑ์ใด?`,
-        choices: [
-          "ก. ผลิตภัณฑ์หลัก (Core Benefit)",
-          "ข. ผลิตภัณฑ์ควบ (Augmented Product)",
-          "ค. ผลิตภัณฑ์พื้นฐาน (Basic Product)",
-          "ง. ผลิตภัณฑ์ที่คาดหวัง (Expected Product)"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Augmented Product = สิ่งเสริมพิเศษที่ให้มากกว่ามาตรฐาน เช่น สปาฟรี รถรับส่ง ฯลฯ  
-- Core Benefit คือ “การได้เข้าพักค้างคืนอย่างปลอดภัย”
-- Basic Product คือห้อง เตียง ห้องน้ำ ฯลฯ
-- Expected Product คือสิ่งที่ลูกค้าคาดหวังขั้นต่ำ เช่น ห้องสะอาด ปลอดภัย`
-      },
-      {
-        id: 19,
-        chapter: "บทที่ 11: ประเภทสินค้า",
-        question: `"ประกันชีวิต" หรือ \"โลงศพ\" เป็นสินค้าประเภทใดที่คนส่วนใหญ่มักไม่คิดอยากซื้อจนกว่าจะถึงเวลา?`,
-        choices: [
-          "ก. สินค้าสะดวกซื้อ (Convenience Goods)",
-          "ข. สินค้าเลือกซื้อ (Shopping Goods)",
-          "ค. สินค้าเจาะจงซื้อ (Specialty Goods)",
-          "ง. สินค้าไม่แสวงซื้อ (Unsought Goods)"
-        ],
-        correctIndex: 3,
-        explanation: `- ข้อ ง ถูกต้อง: Unsought Goods = สินค้าที่ผู้บริโภคไม่รู้จักหรือรู้จักแต่ยังไม่คิดจะซื้อ ต้องอาศัยการขายเชิงรุก/โฆษณาหนัก  
-- ข้อ ก คือสินค้าซื้อง่าย ใช้บ่อย เช่น ขนม เครื่องดื่ม
-- ข้อ ข ต้องเปรียบเทียบก่อนซื้อ เช่น เสื้อผ้า เครื่องใช้ไฟฟ้า
-- ข้อ ค คือแบรนด์เฉพาะที่ลูกค้าตั้งใจหาเลย เช่น นาฬิกาหรูรุ่นเฉพาะ`
-      },
-      {
-        id: 20,
-        chapter: "บทที่ 11: กลยุทธ์ราคา",
-        question: `Apple เปิดตัว iPhone รุ่นใหม่ด้วยราคาสูงมาก เจาะกลุ่มที่ยอมจ่ายเพื่อเทคโนโลยีล่าสุด ก่อนทยอยลดราคาภายหลัง  
-กลยุทธ์นี้เรียกว่าอะไร?`,
-        choices: [
-          "ก. การตั้งราคาเจาะตลาด (Market-Penetration Pricing)",
-          "ข. การตั้งราคาเพื่อกอบโกยตลาด (Market-Skimming Pricing)",
-          "ค. การตั้งราคาตามหลักจิตวิทยา (Psychological Pricing)",
-          "ง. การตั้งราคาตามคู่แข่งขัน (Going-rate Pricing)"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Market-Skimming = ตั้งราคาสูงในช่วงแรกเพื่อ “ตักตวง” กำไรจากกลุ่มบนที่มีกำลังซื้อสูง  
-- ข้อ ก คือการตั้งราคาต่ำเพื่อรีบเจาะตลาดกว้าง
-- ข้อ ค ใช้เทคนิคด้านจิตวิทยา เช่น 9,900 แทน 10,000
-- ข้อ ง ตั้งราคาอิงคู่แข่งเป็นหลัก`
-      },
-      {
-        id: 21,
-        chapter: "บทที่ 11: กลยุทธ์ Push & Pull",
-        question: `บริษัทขนมขบเคี้ยว A ทุ่มโฆษณาทีวี/ออนไลน์ให้ผู้บริโภคเห็นแล้วอยากกิน จนต้องไปถามหาที่ร้าน  
-กลยุทธ์นี้คืออะไร?`,
-        choices: [
-          "ก. กลยุทธ์ผลัก (Push Strategy)",
-          "ข. กลยุทธ์ดึง (Pull Strategy)",
-          "ค. การขายโดยพนักงาน (Personal Selling)",
-          "ง. การส่งเสริมการขายมุ่งสู่คนกลาง (Trade Promotion)"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Pull Strategy = ใช้โฆษณาดึงความต้องการจากผู้บริโภค ให้เขาไป “ดึง” สินค้าจากหน้าร้าน  
-- ข้อ ก Push คือการส่งเสริมคนกลาง/ตัวแทนให้ผลักสินค้าไปยังผู้บริโภค
-- ข้อ ค เน้นพนักงานขายพบลูกค้าโดยตรง
-- ข้อ ง เน้นโปรโมชั่นให้คนกลาง เช่น ส่วนลดร้านค้า`
-      },
-      {
-        id: 22,
-        chapter: "บทที่ 12: การตลาดทางตรง",
-        question: `หัวใจสำคัญที่สุดของ “การตลาดทางตรง (Direct Marketing)” คืออะไร?`,
-        choices: [
-          "ก. การมีพนักงานขายจำนวนมาก",
-          "ข. การมีงบประมาณโฆษณาสูง",
-          "ค. การมีฐานข้อมูลลูกค้า (Database) ที่แม่นยำและเป็นปัจจุบัน",
-          "ง. การมีหน้าร้านสาขาเยอะๆ"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: Direct Marketing ต้องพึ่งฐานข้อมูลลูกค้าเพื่อสื่อสารแบบเจาะจงถึงรายบุคคล และวัดผลตอบสนองได้  
-- ข้อ ก, ข, ง แม้ช่วยได้แต่ไม่ใช่ “หัวใจหลัก” ของ Direct Marketing`
-      },
-      {
-        id: 23,
-        chapter: "บทที่ 12: Omni-Channel",
-        question: `ร้านเสื้อผ้าเชื่อมข้อมูลลูกค้าจากหน้าร้าน เว็บไซต์ แอป ลูกค้าสั่งออนไลน์ไปรับหน้าร้าน หรือเปลี่ยนคืนข้ามช่องทางได้อย่างไร้รอยต่อ  
-แนวคิดนี้คืออะไร?`,
-        choices: [
-          "ก. Multi-Level Marketing",
-          "ข. Omni-Channel Marketing",
-          "ค. Telemarketing",
-          "ง. Mass Marketing"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Omni-Channel = ผสานออนไลน์–ออฟไลน์ให้ลูกค้าใช้ทุกช่องทางได้ลื่นไหลเป็นประสบการณ์เดียว  
-- ข้อ ก การตลาดแบบหลายชั้น/ขายตรงเครือข่าย
-- ข้อ ค การขายทางโทรศัพท์
-- ข้อ ง การตลาดแบบรวม ไม่แบ่งกลุ่ม`
-      },
-      {
-        id: 24,
-        chapter: "บทที่ 12: ติดอันดับ Google",
-        question: `หากต้องการโปรโมตเว็บให้ติดอันดับแรกๆ บน Google แบบธรรมชาติ (ไม่จ่ายค่าโฆษณา) ต้องทำอะไร?`,
-        choices: [
-          "ก. SEO (Search Engine Optimization)",
-          "ข. SEM (Search Engine Marketing)",
-          "ค. Email Marketing",
-          "ง. Affiliate Marketing"
-        ],
-        correctIndex: 0,
-        explanation: `- ข้อ ก ถูกต้อง: SEO = การปรับแต่งเว็บไซต์ให้ติดอันดับการค้นหาตามธรรมชาติ  
-- ข้อ ข SEM คือการซื้อโฆษณาบน Search Engine
-- ข้อ ค การส่งอีเมลการตลาด
-- ข้อ ง ให้คนอื่นช่วยโปรโมตแล้วแบ่งคอมมิชชัน`
-      },
-      {
-        id: 25,
-        chapter: "บทที่ 12: Marketing 5.0",
-        question: `การใช้ Chatbot ตอบลูกค้าอัตโนมัติ หรือใช้ AI วิเคราะห์พฤติกรรมลูกค้าแบบ Real-time เพื่อแนะนำสินค้า  
-จัดอยู่ในยุคการตลาดใด?`,
-        choices: [
-          "ก. Marketing 1.0 (เน้นผลิตภัณฑ์)",
-          "ข. Marketing 3.0 (เน้นค่านิยม)",
-          "ค. Marketing 4.0 (เน้นดิจิทัลพื้นฐาน)",
-          "ง. Marketing 5.0 (เทคโนโลยีเพื่อมนุษยชาติ/Data-Driven)"
-        ],
-        correctIndex: 3,
-        explanation: `- ข้อ ง ถูกต้อง: Marketing 5.0 ใช้เทคโนโลยีขั้นสูง เช่น AI, Big Data เพื่อยกระดับ Customer Experience  
-- 1.0 เน้นตัวสินค้า  
-- 3.0 เน้นคุณค่าทางสังคม/จิตวิญญาณ  
-- 4.0 เน้นการเปลี่ยนผ่านไปสู่ดิจิทัลและการเชื่อมต่อออนไลน์`
-      },
-      {
-        id: 26,
-        chapter: "บทที่ 12: Direct Selling vs Direct Marketing",
-        question: `ข้อใดคือความแตกต่างที่ชัดเจนระหว่าง \"ขายตรง (Direct Selling)\" กับ \"การตลาดทางตรง (Direct Marketing)\"?`,
-        choices: [
-          "ก. ขายตรงต้องใช้พนักงานขายเผชิญหน้า แต่การตลาดทางตรงใช้สื่อสื่อสารไปยังลูกค้าโดยไม่ต้องเจอหน้า",
-          "ข. ขายตรงเน้นขายสินค้าอุตสาหกรรม แต่การตลาดทางตรงเน้นสินค้าอุปโภคบริโภค",
-          "ค. ขายตรงไม่ต้องมีสินค้าจริง แต่การตลาดทางตรงต้องมีสินค้า",
-          "ง. ขายตรงผิดกฎหมาย แต่การตลาดทางตรงถูกกฎหมาย"
-        ],
-        correctIndex: 0,
-        explanation: `- ข้อ ก ถูกต้อง: Direct Selling = พนักงานขายพบลูกค้า Face-to-face ส่วน Direct Marketing ใช้สื่อ (จดหมาย โทรศัพท์ อีเมล ฯลฯ) โดยไม่ต้องพบหน้า  
-- ข้อ ข, ค, ง ล้วนไม่ถูกต้อง`
-      },
-      {
-        id: 27,
-        chapter: "บทที่ 13: วิธีเข้าสู่ตลาดต่างประเทศ",
-        question: `SME ไทยต้องการส่งออกน้ำพริกไปต่างประเทศครั้งแรก ไม่มีประสบการณ์ ต้องการความเสี่ยงต่ำที่สุด ควรเลือกวิธีใด?`,
-        choices: [
-          "ก. การส่งออกทางอ้อม (Indirect Exporting)",
-          "ข. การให้สิทธิบัตร (Licensing)",
-          "ค. การร่วมทุน (Joint Venture)",
-          "ง. การลงทุนโดยตรง (Direct Investment)"
-        ],
-        correctIndex: 0,
-        explanation: `- ข้อ ก ถูกต้อง: Indirect Exporting = ส่งออกผ่านคนกลาง/Trading Firm ใช้เงินลงทุนน้อยและความเสี่ยงต่ำ เหมาะกับมือใหม่  
-- ข้อ ข, ค, ง ต้องใช้ความรู้/ทุนและรับความเสี่ยงสูงกว่า`
-      },
-      {
-        id: 28,
-        chapter: "บทที่ 13: วิธีเข้าสู่ตลาดต่างประเทศ",
-        question: `หากบริษัทต้องการ \"ควบคุมการบริหารจัดการอย่างเบ็ดเสร็จ\" และหวังผลกำไรระยะยาวสูงสุดในตลาดต่างประเทศ ยอมรับความเสี่ยงได้สูงสุด ควรเลือกวิธีใด?`,
-        choices: [
-          "ก. การส่งออก (Exporting)",
-          "ข. การให้สิทธิแฟรนไชส์ (Franchising)",
-          "ค. การลงทุนโดยตรง (Direct Investment)",
-          "ง. การร่วมทุน (Joint Venture)"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: Direct Investment = ตั้งโรงงานหรือบริษัทลูกเองในต่างประเทศ ให้การควบคุมสูงสุดและโอกาสกำไรสูง แต่เสี่ยงและใช้ทุนมาก  
-- ข้อ ก, ข, ง มีการแบ่งความเสี่ยง/การควบคุมกับฝ่ายอื่น`
-      },
-      {
-        id: 29,
-        chapter: "บทที่ 13: กลยุทธ์ผลิตภัณฑ์",
-        question: `McDonald's ขายเบอร์เกอร์เนื้อวัวทั่วโลก แต่เมื่อไปอินเดีย (คนส่วนใหญ่ไม่ทานเนื้อวัว) จึงเปลี่ยนเป็นเบอร์เกอร์ไก่หรือแกะ  
-กลยุทธ์นี้เรียกว่าอะไร?`,
-        choices: [
-          "ก. การขยายผลิตภัณฑ์โดยตรง (Straight Extension)",
-          "ข. การปรับปรุงผลิตภัณฑ์ (Product Adaptation)",
-          "ค. การสร้างผลิตภัณฑ์ใหม่ (Product Invention)",
-          "ง. การปรับปรุงการสื่อสาร (Communication Adaptation)"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Product Adaptation = ปรับตัวสินค้าให้เข้ากับความเชื่อ/รสนิยมท้องถิ่น  
-- ข้อ ก คือเอาสินค้าเดิมไปขายเลยไม่เปลี่ยน
-- ข้อ ค คือสร้างสินค้ารูปแบบใหม่เฉพาะตลาดนั้น
-- ข้อ ง คือปรับข้อความ/โฆษณา ไม่ใช่ตัวสินค้า`
-      },
-      {
-        id: 30,
-        chapter: "บทที่ 13: กลยุทธ์ราคา",
-        question: `บริษัทข้ามชาติขายสินค้าในต่างประเทศต่ำกว่าต้นทุนการผลิต หรือต่ำกว่าราคาที่ขายในประเทศตัวเอง เพื่อกำจัดคู่แข่งท้องถิ่น  
-การกระทำนี้เรียกว่าอะไร?`,
-        choices: [
-          "ก. การตั้งราคาโอน (Transfer Pricing)",
-          "ข. การทุ่มตลาด (Dumping)",
-          "ค. การตั้งราคามาตรฐาน (Standard Pricing)",
-          "ง. การตั้งราคาสองระดับ (Dual Pricing)"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Dumping = การขายตัดราคาในต่างประเทศต่ำกว่าต้นทุน/ราคาปกติ มักขัดกฎหมายการค้าระหว่างประเทศ  
-- ข้อ ก เกี่ยวกับราคาภายในบริษัทย่อย/โอนสินค้าระหว่างกัน
-- ข้อ ค ตั้งราคาเดียวกันทุกตลาด
-- ข้อ ง ตั้งราคาต่างกันสองระดับตามกลุ่มตลาด`
-      },
-      {
-        id: 31,
-        chapter: "บทที่ 13: ความเสี่ยงทางการเมือง",
-        question: `ปัจจัยใดต่อไปนี้ถือเป็น \"ความเสี่ยงด้านการเมือง (Political Risk)\" ที่สำคัญในการทำธุรกิจระหว่างประเทศ?`,
-        choices: [
-          "ก. อัตราแลกเปลี่ยนเงินตราผันผวน",
-          "ข. รสนิยมผู้บริโภคเปลี่ยนไป",
-          "ค. รัฐบาลต่างประเทศยึดกิจการหรือเปลี่ยนแปลงนโยบายกีดกันทางการค้า",
-          "ง. คู่แข่งในท้องถิ่นลดราคาสู้"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: การยึดกิจการ การออกกฎหมายกีดกันการค้า การเมืองไม่เสถียร คือ Political Risk  
-- ข้อ ก เป็นความเสี่ยงด้านการเงิน/อัตราแลกเปลี่ยน
-- ข้อ ข เป็นการเปลี่ยนแปลงด้านวัฒนธรรม/ตลาด
-- ข้อ ง เป็นการแข่งขันทางธุรกิจปกติ`
-      },
-      {
-        id: 32,
-        chapter: "บทที่ 13: รูปแบบการร่วมมือ",
-        question: `บริษัท A จากไทยจับมือกับบริษัท B จากญี่ปุ่น ตั้งบริษัทใหม่ C ถือหุ้นคนละครึ่งทำธุรกิจร่วมกัน  
-รูปแบบนี้เรียกว่าอะไร?`,
-        choices: [
-          "ก. Licensing",
-          "ข. Franchising",
-          "ค. Joint Venture",
-          "ง. Direct Exporting"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: Joint Venture = การร่วมทุนสร้างกิจการใหม่ แบ่งปันความเสี่ยงและผลประโยชน์  
-- ข้อ ก ให้สิทธิผลิต/ใช้ทรัพย์สินทางปัญญา
-- ข้อ ข แฟรนไชส์ ระบบสำเร็จรูปใช้แบรนด์/กระบวนการของเจ้าของแฟรนไชส์
-- ข้อ ง การส่งออกโดยตรง`
-      },
-      {
-        id: 33,
-        chapter: "บทที่ 13: การให้สิทธิ",
-        question: `7-Eleven ในไทยดำเนินงานโดย CP ALL ซึ่งได้รับสิทธิในการใช้ชื่อแบรนด์และระบบจากบริษัทแม่ต่างประเทศ  
-รูปแบบนี้คืออะไร?`,
-        choices: [
-          "ก. Licensing (การให้สิทธิการผลิต)",
-          "ข. Franchising (แฟรนไชส์)",
-          "ค. Contract Manufacturing (จ้างผลิต)",
-          "ง. Turnkey Project"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Franchising เป็นรูปแบบหนึ่งของ Licensing แต่ครอบคลุมทั้งแบรนด์ ระบบบริหาร และวิธีดำเนินงาน  
-- ข้อ ก ให้สิทธิผลิตหรือใช้เทคโนโลยีเฉย ๆ
-- ข้อ ค คือจ้างบริษัทอื่นผลิตสินค้าให้
-- ข้อ ง คือโครงการที่สร้างเสร็จแล้วส่งมอบให้ใช้งาน`
-      },
-      {
-        id: 34,
-        chapter: "บทที่ 13: กลยุทธ์มาตรฐานทั่วโลก",
-        question: `ข้อดีที่สุดของ \"กลยุทธ์มาตรฐานทั่วโลก (Standardized Marketing Strategy)\" คืออะไร?`,
-        choices: [
-          "ก. ตอบสนองความต้องการท้องถิ่นได้ดีที่สุด",
-          "ข. ลดต้นทุนการผลิตและการตลาด (Economies of Scale)",
-          "ค. หลีกเลี่ยงปัญหาด้านกฎหมายได้ดี",
-          "ง. สร้างความสัมพันธ์กับรัฐบาลท้องถิ่นได้ดี"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: ทำสินค้า/โฆษณามาตรฐานเดียวทั่วโลกช่วยประหยัดต้นทุน (Economies of Scale)  
-- ข้อ ก มักเป็นข้อจำกัดของกลยุทธ์นี้ เพราะความต้องการท้องถิ่นอาจต่างกัน
-- ข้อ ค, ง ไม่ใช่ข้อดีหลักโดยตรงของการใช้มาตรฐานเดียวกันทั่วโลก`
-      },
-      {
-        id: 35,
-        chapter: "บทที่ 13: วัฒนธรรมกับการตลาด",
-        question: `ข้อใดสะท้อนอิทธิพลของ \"วัฒนธรรม\" ที่มีต่อการตลาดระหว่างประเทศได้ชัดที่สุด?`,
-        choices: [
-          "ก. การกำหนดภาษีนำเข้าของรัฐบาล",
-          "ข. การเลือกสีและสัญลักษณ์ในบรรจุภัณฑ์ (เช่น สีขาวหมายถึงความตายในบางประเทศ)",
-          "ค. อัตราเงินเฟ้อของประเทศคู่ค้า",
-          "ง. ระบบขนส่งโลจิสติกส์ในประเทศนั้น"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: สี ความเชื่อ สัญลักษณ์ ภาษา คือองค์ประกอบทางวัฒนธรรมที่ส่งผลโดยตรงต่อการออกแบบการตลาด  
-- ข้อ ก, ค, ง เป็นปัจจัยด้านเศรษฐกิจ/กฎหมาย/โครงสร้างพื้นฐาน ไม่ใช่วัฒนธรรมโดยตรง`
-      },
-      {
-        id: 36,
-        chapter: "บทที่ 14: ขั้นตอนการวิจัยตลาด",
-        question: `ขั้นตอนแรกสุดและสำคัญที่สุดของกระบวนการวิจัยตลาดคืออะไร? (ถ้าขั้นตอนนี้ผิด ผลลัพธ์จะผิดหมด)`,
-        choices: [
-          "ก. การเก็บรวบรวมข้อมูล",
-          "ข. การวิเคราะห์ข้อมูล",
-          "ค. การกำหนดปัญหาและวัตถุประสงค์การวิจัย",
-          "ง. การนำเสนอผลงานวิจัย"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้อง: การกำหนดปัญหา/วัตถุประสงค์คือจุดเริ่มที่กำหนดทิศทางงานวิจัยทั้งหมด ถ้ากำหนดผิด ทุกขั้นตอนต่อไปก็หลงทาง  
-- ข้อ ก, ข, ง ถึงจะสำคัญแต่เป็นขั้นถัดไป`
-      },
-      {
-        id: 37,
-        chapter: "บทที่ 14: ประเภทข้อมูล",
-        question: `"ข้อมูลที่หน่วยงานรัฐ/บริษัทอื่นเก็บไว้แล้ว เช่น สถิติประชากรจากกระทรวงมหาดไทย" เรียกว่าข้อมูลประเภทใด?`,
-        choices: [
-          "ก. ข้อมูลปฐมภูมิ (Primary Data)",
-          "ข. ข้อมูลทุติยภูมิ (Secondary Data)",
-          "ค. ข้อมูลเชิงคุณภาพ",
-          "ง. ข้อมูลเชิงปริมาณ"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Secondary Data = ข้อมูลที่มีผู้อื่นเก็บมาก่อน แล้วเรานำมาใช้ต่อ ช่วยประหยัดเวลาและต้นทุน  
-- ข้อ ก คือข้อมูลที่เราลงมือเก็บเองโดยตรง
-- ข้อ ค, ง เป็นมุมมองการจำแนกตามลักษณะข้อมูล (คุณภาพ/ปริมาณ)`
-      },
-      {
-        id: 38,
-        chapter: "บทที่ 14: เครื่องมือเก็บข้อมูล",
-        question: `หากต้องการทราบความคิดเห็นเชิงลึก/ความรู้สึก/เหตุผลการตัดสินใจซื้อของผู้บริโภค วิธีเก็บข้อมูลใดเหมาะที่สุด?`,
-        choices: [
-          "ก. การสังเกต (Observation)",
-          "ข. การสัมภาษณ์กลุ่มย่อย (Focus Group Interview)",
-          "ค. การสำรวจทางโทรศัพท์",
-          "ง. การทดลอง (Experiment)"
-        ],
-        correctIndex: 1,
-        explanation: `- ข้อ ข ถูกต้อง: Focus Group/การสัมภาษณ์ ช่วยดึงเหตุผลและความรู้สึกลึก ๆ เป็นข้อมูลเชิงคุณภาพ  
-- ข้อ ก เหมาะกับการดูพฤติกรรมจริง แต่รู้เหตุผลยาก
-- ข้อ ค เป็นแบบสอบถามเชิงปริมาณมากกว่า
-- ข้อ ง ใช้ทดสอบสาเหตุ–ผล (Cause–Effect)`
-      },
-      {
-        id: 39,
-        chapter: "บทที่ 14: ระบบสารสนเทศการตลาด",
-        question: `ข้อมูลยอดขายรายวัน ข้อมูลสินค้าคงคลัง รายงานการสั่งซื้อ ที่เกิดจากงานประจำของบริษัท  
-จัดเป็นข้อมูลในระบบย่อยใดของ MIS?`,
-        choices: [
-          "ก. ระบบข้อมูลภายในกิจการ (Internal Records System)",
-          "ข. ระบบข่าวกรองการตลาด (Marketing Intelligence System)",
-          "ค. ระบบวิจัยการตลาด (Marketing Research System)",
-          "ง. ระบบสนับสนุนการตัดสินใจ (Marketing Decision Support System)"
-        ],
-        correctIndex: 0,
-        explanation: `- ข้อ ก ถูกต้อง: Internal Records คือข้อมูลพื้นฐานจากการดำเนินงาน เช่น ยอดขาย บัญชี สต็อก  
-- ข้อ ข ข่าวสารจากภายนอก เช่น ข่าวคู่แข่ง ลูกค้า
-- ข้อ ค โครงการวิจัยเฉพาะกิจ
-- ข้อ ง เครื่องมือช่วยวิเคราะห์/ตัดสินใจ`
-      },
-      {
-        id: 40,
-        chapter: "บทที่ 14: ประโยชน์การวิจัยตลาด",
-        question: `ข้อใด ไม่ใช่ ประโยชน์โดยตรงของการทำวิจัยการตลาด?`,
-        choices: [
-          "ก. ช่วยให้ทราบความต้องการที่แท้จริงของลูกค้า",
-          "ข. ช่วยลดความเสี่ยงในการตัดสินใจทางธุรกิจ",
-          "ค. ช่วยรับประกันว่าสินค้าจะขายดีแน่นอน 100%",
-          "ง. ช่วยประเมินผลการดำเนินงานทางการตลาด"
-        ],
-        correctIndex: 2,
-        explanation: `- ข้อ ค ถูกต้องในฐานะ “คำตอบที่ไม่ใช่ประโยชน์จริง” เพราะไม่มีงานวิจัยใดรับประกันความสำเร็จ 100% ได้  
-- ข้อ ก, ข, ง ล้วนเป็นประโยชน์ที่แท้จริงของการวิจัย คือเข้าใจลูกค้า ลดความเสี่ยง และใช้ประเมินผลการตลาด`
-      }
-    ];
-
-    const userAnswers = new Array(questions.length).fill(null);
-    const revealed = new Array(questions.length).fill(false);
-    let currentIndex = 0;
-
-    const qNumberEl = document.getElementById("q-number");
-    const qBadgeEl = document.getElementById("q-badge");
-    const qTextEl = document.getElementById("q-text");
-    const choicesContainer = document.getElementById("choices-container");
-    const explanationEl = document.getElementById("explanation");
-    const exTextEl = document.getElementById("ex-text");
-    const btnPrev = document.getElementById("btn-prev");
-    const btnNext = document.getElementById("btn-next");
-    const btnCheck = document.getElementById("btn-check");
-    const btnSubmitAll = document.getElementById("btn-submit-all");
-    const statusTextEl = document.getElementById("status-text");
-    const progressInnerEl = document.getElementById("progress-inner");
-    const summaryEl = document.getElementById("summary");
-    const jumpsContainer = document.getElementById("question-jumps");
-
-    const choiceLabels = ["ก.", "ข.", "ค.", "ง."];
-
-    function renderQuestion(idx) {
-      const q = questions[idx];
-      qNumberEl.textContent = `ข้อที่ ${q.id}`;
-      qBadgeEl.textContent = q.chapter;
-      qTextEl.textContent = q.question;
-
-      choicesContainer.innerHTML = "";
-      const selected = userAnswers[idx];
-      const showExplanation = revealed[idx];
-
-      q.choices.forEach((choice, i) => {
-        const choiceDiv = document.createElement("div");
-        choiceDiv.className = "choice";
-        choiceDiv.dataset.index = i;
-
-        if (selected === i && !showExplanation) {
-          choiceDiv.classList.add("selected");
-        }
-
-        if (showExplanation) {
-          if (i === q.correctIndex) {
-            choiceDiv.classList.add("correct");
-          }
-          if (selected === i && selected !== q.correctIndex) {
-            choiceDiv.classList.add("incorrect-selected");
-          }
-        }
-
-        const labelSpan = document.createElement("div");
-        labelSpan.className = "choice-label";
-        labelSpan.textContent = choiceLabels[i];
-
-        const textSpan = document.createElement("div");
-        textSpan.className = "choice-text";
-        textSpan.textContent = choice;
-
-        choiceDiv.appendChild(labelSpan);
-        choiceDiv.appendChild(textSpan);
-
-        if (showExplanation && i === q.correctIndex) {
-          const pillCorrect = document.createElement("div");
-          pillCorrect.className = "pill pill-correct";
-          pillCorrect.textContent = "คำตอบที่ถูกต้อง";
-          choiceDiv.appendChild(pillCorrect);
-        } else if (showExplanation && selected === i) {
-          const pillYour = document.createElement("div");
-          pillYour.className = "pill pill-your";
-          pillYour.textContent = "คำตอบที่คุณเลือก";
-          choiceDiv.appendChild(pillYour);
-        }
-
-        choiceDiv.addEventListener("click", () => {
-          if (revealed[idx]) return;
-          userAnswers[idx] = i;
-          renderQuestion(idx);
-          renderStatus();
-          renderJumps();
-        });
-
-        choicesContainer.appendChild(choiceDiv);
-      });
-
-      if (showExplanation) {
-        explanationEl.style.display = "block";
-        exTextEl.textContent = q.explanation;
-      } else {
-        explanationEl.style.display = "none";
-      }
-
-      btnPrev.disabled = idx === 0;
-      btnNext.disabled = idx === questions.length - 1;
-
-      btnCheck.textContent = revealed[idx]
-        ? "ดูคำอธิบายอีกครั้ง"
-        : "ตรวจคำตอบข้อนี้";
-
-      renderStatus();
-      renderProgress();
-      renderJumpsHighlightOnly();
-    }
-
-    function renderStatus() {
-      const answered = userAnswers.filter((a) => a !== null).length;
-      statusTextEl.textContent = `ตอบแล้ว ${answered}/${questions.length} ข้อ`;
-    }
-
-    function renderProgress() {
-      const answered = userAnswers.filter((a) => a !== null).length;
-      const percent = (answered / questions.length) * 100;
-      progressInnerEl.style.width = percent + "%";
-    }
-
-    function checkCurrentQuestion() {
-      const idx = currentIndex;
-      if (userAnswers[idx] === null) {
-        alert("กรุณาเลือกคำตอบก่อนตรวจเฉลย 😊");
-        return;
-      }
-      revealed[idx] = true;
-      renderQuestion(idx);
-      renderJumps();
-    }
-
-    function submitAll() {
-      let correct = 0;
-      let answered = 0;
-      userAnswers.forEach((ans, i) => {
-        if (ans !== null) answered++;
-        if (ans === questions[i].correctIndex) correct++;
-        revealed[i] = true;
-      });
-
-      const scorePercent = ((correct / questions.length) * 100).toFixed(1);
-      const unanswered = questions.length - answered;
-
-      summaryEl.style.display = "block";
-      summaryEl.innerHTML = `
-        <div class="summary-title">ผลการทำแบบทดสอบทั้งหมด</div>
-        <div class="summary-highlight">
-          ได้คะแนน ${correct}/${questions.length} ข้อ (${scorePercent}%)
-        </div>
-        <div class="summary-details">
-          • ตอบแล้ว ${answered} ข้อ &nbsp;• ยังไม่ได้ตอบ ${unanswered} ข้อ  
-          <br/>
-          เคล็ดลับ: ลองกลับไปดูข้อที่ผิด/ยังไม่ตอบ จากปุ่มลัดด้านล่างเพื่อทบทวนความเข้าใจอีกครั้ง 👍
-        </div>
-        <div style="margin-top:8px;">
-          <span class="pill-small pill-correct-q">✔ ข้อที่ตอบถูก</span>
-          <span class="pill-small pill-wrong-q">✖ ข้อที่ตอบผิด</span>
-          <span class="pill-small pill-unanswered">• ยังไม่ตอบ</span>
-        </div>
-      `;
-
-      renderQuestion(currentIndex);
-      renderJumps();
-      renderProgress();
-    }
-
-    function renderJumps() {
-      jumpsContainer.innerHTML = "";
-      questions.forEach((q, i) => {
-        const btn = document.createElement("button");
-        btn.textContent = q.id;
-        btn.className = "jump-btn";
-
-        if (i === currentIndex) {
-          btn.classList.add("jump-current");
-        }
-
-        const ans = userAnswers[i];
-        if (revealed[i]) {
-          if (ans === null) {
-            btn.classList.add("jump-unanswered");
-          } else if (ans === questions[i].correctIndex) {
-            btn.classList.add("jump-answered");
-          } else {
-            btn.classList.add("jump-wrong");
-          }
-        } else if (ans !== null) {
-          btn.classList.add("jump-answered");
-        }
-
-        btn.addEventListener("click", () => {
-          currentIndex = i;
-          renderQuestion(currentIndex);
-          renderJumps();
-        });
-
-        jumpsContainer.appendChild(btn);
-      });
-    }
-
-    function renderJumpsHighlightOnly() {
-      // เรียกจาก renderQuestion เพื่ออัปเดตสถานะ current
-      const buttons = jumpsContainer.querySelectorAll(".jump-btn");
-      buttons.forEach((btn, i) => {
-        btn.classList.toggle("jump-current", i === currentIndex);
-      });
-    }
-
-    btnPrev.addEventListener("click", () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        renderQuestion(currentIndex);
-      }
-    });
-
-    btnNext.addEventListener("click", () => {
-      if (currentIndex < questions.length - 1) {
-        currentIndex++;
-        renderQuestion(currentIndex);
-      }
-    });
-
-    btnCheck.addEventListener("click", checkCurrentQuestion);
-    btnSubmitAll.addEventListener("click", submitAll);
-
-    // init
-    renderQuestion(0);
-    renderJumps();
-  </script>
-</body>
-</html>
+export default QuizApp;
