@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thai Hero: Guardian of the SDGs Thailand</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #050b14;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, .sci-font {
+            font-family: 'Chakra Petch', sans-serif;
+        }
+
+        /* Space Background Animation */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            opacity: var(--opacity);
+        }
+
+        @keyframes twinkle {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.5); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(96, 165, 250, 0.2);
+            border-color: rgba(96, 165, 250, 0.5);
+        }
+
+        /* Badge Styles for Majors */
+        .badge-sci { background-color: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-soc { background-color: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Background Stars -->
+    <div id="stars-container" class="stars"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-rocket text-blue-400 text-2xl mr-2"></i>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-lg tracking-wider sci-font leading-tight">YOUTH CHALLENGER</span>
+                        <span class="text-[10px] text-gray-400 tracking-widest">MUKA STUDENT CLUB</span>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#about" class="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition">โครงการ</a>
+                        <a href="#disciplines" class="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition">7 ศาสตร์</a>
+                        <a href="#criteria" class="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition">เกณฑ์คะแนน</a>
+                        <a href="#timeline" class="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition">กำหนดการ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 pb-10 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px]"></div>
+        </div>
+        
+        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
+            <div class="mb-4 inline-flex items-center px-3 py-1 rounded-full border border-yellow-500/30 bg-yellow-900/20 text-yellow-300 text-xs sci-font animate-pulse">
+                <i class="fa-solid fa-star text-[10px] mr-2"></i> การแข่งขันประจำวิทยาเขตกาญจนบุรี
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">
+                <span class="block text-white">THAI HERO :</span>
+                <span class="gradient-text">GUARDIAN OF THE SDGs</span>
+            </h1>
+            <h2 class="text-xl md:text-2xl text-blue-300 mb-6 font-light sci-font">
+                กาลอวกาศพิทักษ์ประเทศไทย
+            </h2>
+            <p class="text-lg text-gray-300 mb-8 max-w-3xl mx-auto font-light leading-relaxed">
+                ภารกิจสร้างสรรค์นวัตกรรมเพื่อประเทศไทย โดยการ "บูรณาการ 7 ศาสตร์" ของมหิดลกาญจนบุรี<br>
+                <span class="text-blue-400 font-semibold">Rethink Development</span> เพื่อแก้ปัญหาวิกฤต SDGs ปี 2025
+            </p>
+
+            <!-- Qualification Box -->
+            <div class="glass-panel p-4 rounded-lg max-w-3xl mx-auto mb-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-300">
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid fa-user-graduate text-blue-400 mb-1"></i>
+                    <span>นักศึกษา MUKA ปี 2-4</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid fa-users text-purple-400 mb-1"></i>
+                    <span>ทีมละ 3-5 คน</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid fa-layer-group text-green-400 mb-1"></i>
+                    <span>คละสาขาได้ (ไม่บังคับ)</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid fa-award text-yellow-400 mb-1"></i>
+                    <span>รับ AT + เกียรติบัตร</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="scrollToSection('disciplines')" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                    <i class="fa-solid fa-book-open mr-2"></i> ดูข้อมูล 7 ศาสตร์
+                </button>
+                <button onclick="window.open('https://forms.google.com', '_blank')" class="px-8 py-3 glass-panel hover:bg-white/10 text-white rounded-lg font-semibold transition border border-white/20">
+                    <i class="fa-solid fa-pen-nib mr-2"></i> สมัครเข้าร่วมภารกิจ
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- The 7 Disciplines -->
+    <section id="disciplines" class="py-16 bg-gray-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 sci-font text-white">THE ARSENAL: 7 MUKA DISCIPLINES</h2>
+                <p class="text-gray-400">เลือกใช้องค์ความรู้จาก <span class="text-blue-400 font-bold">อย่างน้อย 3 ศาสตร์</span> ในการทำโปรเจกต์</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Science & Tech Group -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-green-400 sci-font border-b border-green-500/30 pb-2 mb-4">
+                        <i class="fa-solid fa-flask mr-2"></i> Science & Technology
+                    </h3>
+                    
+                    <div class="glass-panel p-4 rounded-lg flex items-start gap-4 hover:bg-white/5 transition">
+                        <div class="bg-green-900/50 text-green-400 font-bold p-2 rounded w-12 text-center text-sm">CB</div>
+                        <div>
+                            <h4 class="font-bold text-white">Conservation Biology (ชีววิทยาเชิงอนุรักษ์)</h4>
+                            <p class="text-xs text-gray-400 mt-1">ความหลากหลายทางชีวภาพ, สัตว์ป่า, พืชพรรณ, นิเวศวิทยา</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-lg flex items-start gap-4 hover:bg-white/5 transition">
+                        <div class="bg-green-900/50 text-green-400 font-bold p-2 rounded w-12 text-center text-sm">AG</div>
+                        <div>
+                            <h4 class="font-bold text-white">Agricultural Science (วิทยาศาสตร์การเกษตร)</h4>
+                            <p class="text-xs text-gray-400 mt-1">การผลิตพืช, ปรับปรุงพันธุ์, Smart Farm, ความมั่นคงทางอาหาร</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-lg flex items-start gap-4 hover:bg-white/5 transition">
+                        <div class="bg-green-900/50 text-green-400 font-bold p-2 rounded w-12 text-center text-sm">FT</div>
+                        <div>
+                            <h4 class="font-bold text-white">Food Technology (เทคโนโลยีการอาหาร)</h4>
+                            <p class="text-xs text-gray-400 mt-1">แปรรูปอาหาร, ความปลอดภัย, นวัตกรรมอาหาร, ถนอมอาหาร</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-lg flex items-start gap-4 hover:bg-white/5 transition">
+                        <div class="bg-yellow-900/50 text-yellow-400 font-bold p-2 rounded w-12 text-center text-sm">GE</div>
+                        <div>
+                            <h4 class="font-bold text-white">Geoscience (ธรณีศาสตร์)</h4>
+                            <p class="text-xs text-gray-400 mt-1">ทรัพยากรแร่/หิน, ภัยพิบัติทางธรณี, การสำรวจพื้นที่</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-lg flex items-start gap-4 hover:bg-white/5 transition">
+                        <div class="bg-red-900/50 text-red-400 font-bold p-2 rounded w-12 text-center text-sm">ED</div>
+                        <div>
+                            <h4 class="font-bold text-white">Env. Engineering (วิศวกรรมสิ่งแวดล้อมฯ)</h4>
+                            <p class="text-xs text-gray-400 mt-1">จัดการมลพิษ, โครงสร้างพื้นฐาน, รับมือภัยพิบัติ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social & Business Group -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-blue-400 sci-font border-b border-blue-500/30 pb-2 mb-4">
+                        <i class="fa-solid fa-briefcase mr-2"></i> Social & Business
+                    </h3>
+                    
+                    <div class="glass-panel p-4 rounded-lg flex items-start gap-4 hover:bg-white/5 transition">
+                        <div class="bg-blue-900/50 text-blue-400 font-bold p-2 rounded w-12 text-center text-sm">AC</div>
+                        <div>
+                            <h4 class="font-bold text-white">Accounting (บัญชี)</h4>
+                            <p class="text-xs text-gray-400 mt-1">การเงิน, ภาษี, ต้นทุน, ความคุ้มค่า, รายงานความยั่งยืน (ESG)</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-lg flex items-start gap-4 hover:bg-white/5 transition">
+                        <div class="bg-blue-900/50 text-blue-400 font-bold p-2 rounded w-12 text-center text-sm">BA</div>
+                        <div>
+                            <h4 class="font-bold text-white">Business Administration (บริหารธุรกิจ)</h4>
+                            <p class="text-xs text-gray-400 mt-1">กลยุทธ์, การตลาด, HR, โลจิสติกส์, ผู้ประกอบการ</p>
+                        </div>
+                    </div>
+
+                    <!-- Integration Example Box -->
+                    <div class="mt-8 border border-dashed border-gray-600 rounded-xl p-6 relative">
+                        <div class="absolute -top-3 left-4 bg-[#050b14] px-2 text-xs text-gray-400 uppercase tracking-widest">Example Case</div>
+                        <h4 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-lightbulb text-yellow-400 mr-2"></i> Project: Smart Rice for Climate</h4>
+                        <div class="flex flex-col md:flex-row gap-2 text-xs text-gray-300 items-center justify-center">
+                            <div class="bg-yellow-900/30 px-3 py-2 rounded border border-yellow-500/30 w-full text-center">
+                                <span class="font-bold text-yellow-400">GE</span><br>หาแหล่งน้ำบาดาล
+                            </div>
+                            <i class="fa-solid fa-arrow-right text-gray-500 hidden md:block"></i>
+                            <i class="fa-solid fa-arrow-down text-gray-500 md:hidden"></i>
+                            <div class="bg-red-900/30 px-3 py-2 rounded border border-red-500/30 w-full text-center">
+                                <span class="font-bold text-red-400">ED</span><br>วางระบบท่อ/ลดก๊าซ
+                            </div>
+                            <i class="fa-solid fa-arrow-right text-gray-500 hidden md:block"></i>
+                            <i class="fa-solid fa-arrow-down text-gray-500 md:hidden"></i>
+                            <div class="bg-blue-900/30 px-3 py-2 rounded border border-blue-500/30 w-full text-center">
+                                <span class="font-bold text-blue-400">BA/AC</span><br>ขายคาร์บอนเครดิต
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scoring Criteria -->
+    <section id="criteria" class="py-16 relative">
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-30"></div>
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-10">
+                <span class="text-blue-400 text-sm font-bold tracking-widest uppercase">Total 20 Points</span>
+                <h2 class="text-3xl md:text-5xl font-bold mt-2 mb-4 sci-font text-white">SCORING CRITERIA</h2>
+                <p class="text-gray-400 text-sm">เน้นรูปธรรม ทำจริง และยั่งยืน</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Score 1 -->
+                <div class="glass-panel p-6 rounded-xl border-l-4 border-purple-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-white">1. Multidisciplinary Synergy</h3>
+                        <span class="text-2xl font-bold text-purple-400 sci-font">6 pts</span>
+                    </div>
+                    <ul class="text-sm text-gray-400 space-y-2 list-disc list-inside">
+                        <li><span class="text-gray-200">The 3-Discipline Rule (3 คะแนน):</span> ระบุการใช้ทฤษฎีจาก 3 สาขาชัดเจน</li>
+                        <li><span class="text-gray-200">Deep Integration (3 คะแนน):</span> ผสมผสานอย่างมีเหตุผล ไม่ใช่แค่แปะชื่อ</li>
+                    </ul>
+                </div>
+
+                <!-- Score 2 -->
+                <div class="glass-panel p-6 rounded-xl border-l-4 border-red-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-white">2. Critical SDG Relevance</h3>
+                        <span class="text-2xl font-bold text-red-400 sci-font">5 pts</span>
+                    </div>
+                    <ul class="text-sm text-gray-400 space-y-2 list-disc list-inside">
+                        <li><span class="text-gray-200">Target Red Zone (2.5 คะแนน):</span> แก้ปัญหาวิกฤตของไทย (SDG Red Status)</li>
+                        <li><span class="text-gray-200">Evidence-Based (2.5 คะแนน):</span> มีข้อมูลสถิติ/งานวิจัยอ้างอิง</li>
+                    </ul>
+                </div>
+
+                <!-- Score 3 -->
+                <div class="glass-panel p-6 rounded-xl border-l-4 border-blue-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-white">3. Impact & Innovation</h3>
+                        <span class="text-2xl font-bold text-blue-400 sci-font">5 pts</span>
+                    </div>
+                    <ul class="text-sm text-gray-400 space-y-2 list-disc list-inside">
+                        <li><span class="text-gray-200">Rethink (2 คะแนน):</span> คิดใหม่ ไม่ใช้วิธีเดิมที่ล้มเหลว</li>
+                        <li><span class="text-gray-200">Feasibility (1.5 คะแนน):</span> ทำจริงได้ภายใต้ทรัพยากรที่มี</li>
+                        <li><span class="text-gray-200">Scalability (1.5 คะแนน):</span> ขยายผลสู่ระดับจังหวัด/ประเทศได้</li>
+                    </ul>
+                </div>
+
+                <!-- Score 4 -->
+                <div class="glass-panel p-6 rounded-xl border-l-4 border-green-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-white">4. Sustainability & Ethics</h3>
+                        <span class="text-2xl font-bold text-green-400 sci-font">4 pts</span>
+                    </div>
+                    <ul class="text-sm text-gray-400 space-y-2 list-disc list-inside">
+                        <li><span class="text-gray-200">Future-Proof (2 คะแนน):</span> ใช้ได้จริงในอีก 5-10 ปี</li>
+                        <li><span class="text-gray-200">Social Inclusion (2 คะแนน):</span> ไม่ทิ้งใครไว้ข้างหลัง (ลดความเหลื่อมล้ำ)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Output & Timeline -->
+    <section id="timeline" class="py-16 bg-black/30">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Outputs -->
+            <div class="text-center mb-16">
+                <h3 class="text-xl font-bold text-white mb-6">รูปแบบผลงาน (Output Format)</h3>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="px-4 py-2 border border-gray-600 rounded-full text-sm text-gray-300 hover:border-blue-500 hover:text-blue-400 transition cursor-default">Project</span>
+                    <span class="px-4 py-2 border border-gray-600 rounded-full text-sm text-gray-300 hover:border-blue-500 hover:text-blue-400 transition cursor-default">Policy</span>
+                    <span class="px-4 py-2 border border-gray-600 rounded-full text-sm text-gray-300 hover:border-blue-500 hover:text-blue-400 transition cursor-default">Innovation</span>
+                    <span class="px-4 py-2 border border-gray-600 rounded-full text-sm text-gray-300 hover:border-blue-500 hover:text-blue-400 transition cursor-default">Business Model</span>
+                    <span class="px-4 py-2 border border-gray-600 rounded-full text-sm text-gray-300 hover:border-blue-500 hover:text-blue-400 transition cursor-default">Principle/Theory</span>
+                    <span class="px-4 py-2 border border-gray-600 rounded-full text-sm text-gray-300 hover:border-blue-500 hover:text-blue-400 transition cursor-default">Research</span>
+                </div>
+            </div>
+
+            <!-- Timeline Steps -->
+            <div class="relative">
+                <div class="absolute left-1/2 -ml-0.5 w-0.5 h-full bg-gray-700 hidden md:block"></div>
+                
+                <!-- Step 1 -->
+                <div class="mb-8 md:flex md:justify-between items-center group">
+                    <div class="md:w-[45%] text-right pr-8 hidden md:block">
+                        <h4 class="text-xl font-bold text-white">Recruitment Phase</h4>
+                        <p class="text-gray-400 text-sm">รวมทีม 3-5 คน สมัครออนไลน์</p>
+                    </div>
+                    <div class="absolute left-1/2 -ml-3 w-6 h-6 bg-gray-900 border-4 border-blue-500 rounded-full hidden md:block z-10"></div>
+                    <div class="md:w-[45%] pl-8 md:pl-0">
+                         <div class="glass-panel p-6 rounded-lg md:hidden mb-4">
+                            <h4 class="text-xl font-bold text-white">Recruitment Phase</h4>
+                            <p class="text-gray-400 text-sm">รวมทีม 3-5 คน สมัครออนไลน์</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="mb-8 md:flex md:justify-between items-center group">
+                    <div class="md:w-[45%] pr-8 md:text-right"></div>
+                    <div class="absolute left-1/2 -ml-3 w-6 h-6 bg-gray-900 border-4 border-yellow-500 rounded-full hidden md:block z-10"></div>
+                    <div class="md:w-[45%] pl-8">
+                        <div class="glass-panel p-6 rounded-lg border-l-4 border-yellow-500">
+                            <span class="text-yellow-400 font-bold text-xs tracking-wider">MANDATORY WORKSHOP</span>
+                            <h4 class="text-xl font-bold text-white mt-1">11 กุมภาพันธ์ 2569</h4>
+                            <p class="text-white text-sm">เวลา 13.00 - 16.00 น.</p>
+                            <p class="text-gray-400 text-xs mt-2">พัฒนาทักษะและเสริมความสัมพันธ์ (บังคับเข้าร่วม)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="mb-8 md:flex md:justify-between items-center group">
+                    <div class="md:w-[45%] pr-8 text-right hidden md:block">
+                        <div class="glass-panel p-6 rounded-lg border-r-4 border-red-500">
+                            <span class="text-red-400 font-bold text-xs tracking-wider">THE FINAL</span>
+                            <h4 class="text-xl font-bold text-white mt-1">หลังสอบกลางภาค</h4>
+                            <p class="text-gray-400 text-sm">คัดเลือก 6 ทีมสุดท้าย (วันเวลาแจ้งทางอีเมล)</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-1/2 -ml-3 w-6 h-6 bg-gray-900 border-4 border-red-500 rounded-full hidden md:block z-10"></div>
+                     <div class="md:w-[45%] pl-8 md:hidden">
+                        <div class="glass-panel p-6 rounded-lg border-l-4 border-red-500">
+                            <span class="text-red-400 font-bold text-xs tracking-wider">THE FINAL</span>
+                            <h4 class="text-xl font-bold text-white mt-1">หลังสอบกลางภาค</h4>
+                            <p class="text-gray-400 text-sm">คัดเลือก 6 ทีมสุดท้าย (วันเวลาแจ้งทางอีเมล)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prizes -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div class="glass-panel p-6 rounded-xl transform md:translate-y-4">
+                    <div class="text-gray-400 text-sm mb-2">รองชนะเลิศอันดับ 2</div>
+                    <div class="text-2xl font-bold text-white">1,000 THB</div>
+                </div>
+                <div class="glass-panel p-8 rounded-xl border border-yellow-500/30 bg-yellow-900/10 transform md:-translate-y-4 shadow-[0_0_20px_rgba(234,179,8,0.2)]">
+                    <i class="fa-solid fa-trophy text-4xl text-yellow-400 mb-2"></i>
+                    <div class="text-yellow-400 font-bold text-sm mb-2">ชนะเลิศ</div>
+                    <div class="text-4xl font-bold text-white">2,500 THB</div>
+                </div>
+                <div class="glass-panel p-6 rounded-xl transform md:translate-y-4">
+                    <div class="text-gray-400 text-sm mb-2">รองชนะเลิศอันดับ 1</div>
+                    <div class="text-2xl font-bold text-white">1,500 THB</div>
+                </div>
+            </div>
+            <p class="text-center text-gray-500 text-xs mt-8">*สนับสนุนโดย อ.มงคล และ ชมรม Youth Challenger</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-black text-center border-t border-gray-800">
+        <p class="text-gray-500 text-sm">
+            &copy; 2025 Youth Challenger Club, MUKA. <br class="md:hidden"> Mahidol University Kanchanaburi Campus.
+        </p>
+    </footer>
+
+    <script>
+        // Stars Generation
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('stars-container');
+            const starCount = 100;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const size = Math.random() * 2 + 1;
+                const duration = Math.random() * 3 + 2;
+
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.setProperty('--duration', `${duration}s`);
+                star.style.setProperty('--opacity', Math.random());
+
+                container.appendChild(star);
+            }
+        });
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
